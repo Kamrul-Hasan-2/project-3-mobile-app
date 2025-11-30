@@ -1,6 +1,4 @@
 import 'package:event_manager/controllers/taskfb_controller.dart';
-import 'package:event_manager/db/fb_db_helper.dart';
-import 'package:event_manager/pin/app_lock_service.dart';
 import 'package:event_manager/services/notification_services.dart';
 import 'package:event_manager/ui/home_page.dart';
 import 'package:event_manager/ui/theme.dart';
