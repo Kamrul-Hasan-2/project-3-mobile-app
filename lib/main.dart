@@ -1,4 +1,8 @@
+
 import 'package:event_manager/controllers/taskfb_controller.dart';
+import 'package:event_manager/db/fb_db_helper.dart';
+import 'package:event_manager/pin/app_lock_service.dart';
+import 'package:event_manager/pin/pin_screen.dart';
 import 'package:event_manager/services/notification_services.dart';
 import 'package:event_manager/ui/home_page.dart';
 import 'package:event_manager/ui/theme.dart';
@@ -21,6 +25,7 @@ Future<void> main() async {
   await NotifyHelper.initNotification();
   Get.put(TaskFbController());
 
+  bool isPinSet = await AppLockService.isPinSet();
   User? user = FirebaseAuth.instance.currentUser;
 
   // fixed only portrait mode
@@ -29,7 +34,7 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(MyApp(isPinSet: false, user: user));
+  runApp(MyApp(isPinSet: isPinSet, user: user));
 }
 
 class MyApp extends StatelessWidget {
@@ -47,7 +52,9 @@ class MyApp extends StatelessWidget {
       theme: Themes.light,
       darkTheme: Themes.dark,
       themeMode: ThemeService().theme,
-      home: (user != null
+      home: isPinSet
+          ? PinEntryScreen()
+          : (user != null
               ? HomePage()
               : LoginScreen()),
     );
