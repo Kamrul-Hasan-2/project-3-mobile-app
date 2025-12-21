@@ -1,11 +1,12 @@
-
 import 'dart:io';
+import 'package:event_manager/controllers/taskfb_controller.dart';
 import 'package:event_manager/models/task.dart';
 import 'package:event_manager/ui/media_preview/image_screen.dart';
 import 'package:event_manager/ui/media_preview/vdo_player_screen.dart';
 import 'package:event_manager/ui/theme.dart';
 import 'package:event_manager/ui/vdo_player_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_filex/open_filex.dart';
 
@@ -20,6 +21,7 @@ class TaskTile extends StatefulWidget {
 
 class _TaskTileState extends State<TaskTile> {
   bool isExpanded = false;
+  final _taskfbController = Get.find<TaskFbController>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,22 @@ class _TaskTileState extends State<TaskTile> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Checkbox for marking task as completed
+                Container(
+                  margin: EdgeInsets.only(right: 8),
+                  child: Checkbox(
+                    value: widget.task?.isCompleted == 1,
+                    onChanged: widget.task?.isCompleted == 1 ? null : (value) {
+                      if (value == true && widget.task?.id != null) {
+                        _taskfbController.markTaskCompleted(widget.task!.id!);
+                      }
+                    },
+                    activeColor: Colors.white,
+                    checkColor: _getBGClr(widget.task?.color ?? 0),
+                    side: BorderSide(color: Colors.white, width: 2),
+                  ),
+                ),
+                
                 if (!isExpanded)
                   Container(
                     width: 50,
