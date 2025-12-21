@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:518148769986:android:46dfed0173cad4a84d135b",
         "android_client_info": {
-          "package_name": "com.example.event_manager"
+          "package_name": "com.smuct.event_reminder"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "518148769986-vnhhs1l4e3p7tgi5snaogg353irt8bkj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.event_manager",
+            "package_name": "com.smuct.event_reminder",
             "certificate_hash": "4f8283870ebadb83d5c6bb7699be4e5d648f7b74"
           }
         },
