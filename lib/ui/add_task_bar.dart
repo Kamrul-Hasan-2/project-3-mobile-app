@@ -280,6 +280,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               // ),
 
               const SizedBox(height: 10),
+              /*
               Row(
                 children: [
                   Text("Attach Media", style: titleStyle),
@@ -330,7 +331,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ],
                 ),
               ),
-
+              */
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -495,23 +496,141 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Color _customColor = Colors.blue;
 
   Future<void> _validateData() async {
-    Get.snackbar(
-        "Under Development",
-        "This feature is under development.",
+    // debug print
+    debugPrint("Title: ${_titleController.text}");
+    if (_titleController.text.isNotEmpty) {
+      if (widget.task == null) {
+        debugPrint("Adding new task to DB");
+        await _addTaskToDb();
+      } else {
+        debugPrint("Updating existing task in DB");
+        await _updateTaskInDb();
+      }
+    } else if (_titleController.text.isEmpty) {
+      Get.snackbar(
+        "Required",
+        "Title is required!",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.white,
         colorText: pinkClr,
         icon: const Icon(Icons.warning_amber_rounded, color: Colors.red),
       );
+    }
   }
 
   Future<void> _addTaskToDb() async {
-    
+    try {
+      debugPrint("add_task_bar Starting _addTaskToDb");
+      
+      // Convert XFile images to paths
+      List<String> imagePaths = _selectedImages.map((file) => file.path).toList();
+      List<String> videoPaths = _selectedVideos.map((file) => file.path).toList();
+      List<String> filePaths = _selectedFiles.map((file) => file.path).toList();
+
+      debugPrint("add_task_bar Media files - Images: ${imagePaths.length}, Videos: ${videoPaths.length}, Files: ${filePaths.length}");
+
+      Task newTask = Task(
+        title: _titleController.text,
+        description: _descController.text,
+        date: DateFormat.yMd().format(_selectedDate),
+        startTime: _startTime,
+        endTime: _endTime,
+        location: _locationController.text,
+        category: _selectedCategory,
+        remind: _selectedRemind,
+        repeat: _selectedRepeat,
+        color: _selectedColor,
+        isCompleted: 0,
+        photoPaths: imagePaths,
+        videoPaths: videoPaths,
+        filePaths: filePaths,
+      );
+
+      debugPrint("add_task_bar Task object created: ${newTask.title}");
+      debugPrint("add_task_bar Adding new task to DB");
+      
+      await _taskfbController.addTask(task: newTask);
+      
+      debugPrint("add_task_bar Task added successfully, showing success message");
+      
+      Get.snackbar(
+        "Success",
+        "Task created successfully!",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      
+      // Navigate back after successful creation
+      Get.back();
+    } catch (e, stackTrace) {
+      debugPrint("ERROR in add_task_bar._addTaskToDb: $e");
+      debugPrint("StackTrace: $stackTrace");
+      
+      String errorMessage = "Failed to create task";
+      if (e.toString().contains('not authenticated')) {
+        errorMessage = "Please login to create tasks";
+      } else {
+        errorMessage = "Failed to create task: ${e.toString().split(':').last}";
+      }
+      
+      Get.snackbar(
+        "Error",
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
+    }
   }
 
-
   Future<void> _updateTaskInDb() async {
-    
+    try {
+      // Convert XFile images to paths
+      List<String> imagePaths = _selectedImages.map((file) => file.path).toList();
+      List<String> videoPaths = _selectedVideos.map((file) => file.path).toList();
+      List<String> filePaths = _selectedFiles.map((file) => file.path).toList();
+
+      Task updatedTask = Task(
+        id: widget.task!.id,
+        title: _titleController.text,
+        description: _descController.text,
+        date: DateFormat.yMd().format(_selectedDate),
+        startTime: _startTime,
+        endTime: _endTime,
+        location: _locationController.text,
+        category: _selectedCategory,
+        remind: _selectedRemind,
+        repeat: _selectedRepeat,
+        color: _selectedColor,
+        isCompleted: widget.task!.isCompleted,
+        photoPaths: imagePaths,
+        videoPaths: videoPaths,
+        filePaths: filePaths,
+      );
+
+      await _taskfbController.updateEvents(updatedTask);
+      
+      Get.snackbar(
+        "Success",
+        "Task updated successfully!",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      
+      // Navigate back after successful update
+      Get.back();
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to update task: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   Widget _mediaButton(

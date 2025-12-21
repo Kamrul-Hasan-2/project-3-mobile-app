@@ -38,10 +38,14 @@ class ProgressTrackerWidget extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(borderRadius - 2),
-            child: LinearProgressIndicator(
-              value: progress.clamp(0.0, 1.0),
-              backgroundColor: Colors.transparent,
-              valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+            child: Container(
+              height: height,
+              child: LinearProgressIndicator(
+                value: progress.clamp(0.0, 1.0),
+                backgroundColor: Colors.transparent,
+                valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+                minHeight: height,
+              ),
             ),
           ),
           if (text != null)

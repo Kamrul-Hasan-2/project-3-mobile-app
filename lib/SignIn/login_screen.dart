@@ -61,12 +61,25 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginWithGoogle() async {
-    var user = await _authService.signInWithGoogle();
-    if (user != null) {
-      Get.off(() => HomePage());
-      _showSnackBar('Google Login successful!');
-    } else {
-      _showSnackBar('Google Login failed!');
+    try {
+      var user = await _authService.signInWithGoogle();
+      if (user != null) {
+        // Wait a bit to ensure Firebase Auth state is fully propagated
+        await Future.delayed(Duration(milliseconds: 500));
+        
+        // Verify user is still authenticated
+        if (FirebaseAuth.instance.currentUser != null) {
+          _showSnackBar('Google Login successful!');
+          Get.off(() => HomePage());
+        } else {
+          _showSnackBar('Authentication verification failed. Please try again.');
+        }
+      } else {
+        _showSnackBar('Google Login failed or cancelled!');
+      }
+    } catch (e) {
+      print('Google Login Error: $e');
+      _showSnackBar('Google Login error: ${e.toString()}');
     }
   }
 

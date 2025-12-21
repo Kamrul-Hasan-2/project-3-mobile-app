@@ -16,6 +16,7 @@ class AuthService {
 
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
+        print("Google Sign-In: User cancelled");
         return null; // User canceled sign-in
       }
 
@@ -26,6 +27,7 @@ class AuthService {
       );
 
       UserCredential userCredential = await _auth.signInWithCredential(credential);
+      print("Google Sign-In successful: ${userCredential.user?.email}");
       return userCredential.user;
     } catch (e) {
       print("Google Sign-In Error: $e");

@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                 child: ProgressTrackerWidget(
                   progress: progress,
                   backgroundColor: context.theme.primaryColor,
-                  progressColor: Colors.white,
+                  progressColor: Colors.black54,
                   height: 30,
                   borderRadius: 10,
                   text: '$completedTasks of $totalTasks tasks completed',
@@ -345,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                 : _bottomSheetButton(
                     label: "Task Completed",
                     onTap: () {
-                      // _taskController.markTaskCompleted(task.id!);
+                      _taskfbController.markTaskCompleted(task.id!);
                       Get.back();
                     },
                     clr: primaryClr,
