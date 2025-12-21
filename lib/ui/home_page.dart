@@ -7,6 +7,7 @@ import 'package:event_manager/pin/reset_pin_screen.dart';
 import 'package:event_manager/pin/set_pin_screen.dart';
 import 'package:event_manager/services/pdf_service.dart';
 import 'package:event_manager/ui/widgets/addtask_btn.dart';
+import 'package:event_manager/ui/widgets/progress_tracker_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -59,6 +60,32 @@ class _HomePageState extends State<HomePage> {
             _addTaskBar(),
 
             _addDateBar(),
+
+            // Progress Tracker
+            Obx(() {
+              final totalTasks = _taskfbController.taskList.length;
+              final completedTasks = _taskfbController.taskList
+                  .where((task) => task.isCompleted == 1)
+                  .length;
+              final progress = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: ProgressTrackerWidget(
+                  progress: progress,
+                  backgroundColor: context.theme.primaryColor,
+                  progressColor: Colors.white,
+                  height: 30,
+                  borderRadius: 10,
+                  text: '$completedTasks of $totalTasks tasks completed',
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              );
+            }),
 
             const SizedBox(
               height: 10,
@@ -225,6 +252,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+
 
   _showTasks() {
     return Expanded(
