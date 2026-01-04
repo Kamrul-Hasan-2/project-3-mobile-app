@@ -553,16 +553,24 @@ class _AddTaskPageState extends State<AddTaskPage> {
       
       debugPrint("add_task_bar Task added successfully, showing success message");
       
+      // Show success message
       Get.snackbar(
         "Success",
         "Task created successfully!",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        duration: const Duration(seconds: 2),
       );
       
-      // Navigate back after successful creation
-      Get.back();
+      // Wait a brief moment for snackbar to display, then navigate back
+      await Future.delayed(const Duration(milliseconds: 300));
+      
+      debugPrint("add_task_bar Navigating back to home page");
+      if (mounted) {
+        Navigator.of(context).pop();
+        debugPrint("add_task_bar Navigation completed using Navigator.pop");
+      }
     } catch (e, stackTrace) {
       debugPrint("ERROR in add_task_bar._addTaskToDb: $e");
       debugPrint("StackTrace: $stackTrace");
@@ -618,10 +626,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        duration: const Duration(seconds: 2),
       );
       
+      // Wait a brief moment for snackbar to display, then navigate back
+      await Future.delayed(const Duration(milliseconds: 300));
+      
       // Navigate back after successful update
-      Get.back();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } catch (e) {
       Get.snackbar(
         "Error",

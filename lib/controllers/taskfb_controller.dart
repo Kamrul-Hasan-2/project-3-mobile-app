@@ -21,8 +21,12 @@ class TaskFbController extends GetxController {
         debugPrint("!TaskFbController Adding task: ${task.title}");
         debugPrint("Task data before calling FBdbHelper: ${task.toJson()}");
         await FBdbHelper.addTask(task);
-        debugPrint("Task added successfully");
+        debugPrint("Task added to Firestore successfully");
+        
+        // Refresh task list after adding
+        debugPrint("TaskFbController Refreshing task list");
         getTasks();
+        debugPrint("TaskFbController Task list refreshed");
       } catch (e, stackTrace) {
         debugPrint("ERROR in TaskFbController.addTask: $e");
         debugPrint("StackTrace: $stackTrace");
