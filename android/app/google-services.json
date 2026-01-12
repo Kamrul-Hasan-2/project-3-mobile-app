@@ -1,42 +1,237 @@
 {
   "project_info": {
-    "project_number": "518148769986",
-    "project_id": "event-681f7",
-    "storage_bucket": "event-681f7.firebasestorage.app"
+    "project_number": "544454413149",
+    "project_id": "naimur-firebase",
+    "storage_bucket": "naimur-firebase.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:518148769986:android:46dfed0173cad4a84d135b",
+        "mobilesdk_app_id": "1:544454413149:android:7b50b9c8ae134abfcb36b4",
         "android_client_info": {
-          "package_name": "com.smuct.event_reminder"
+          "package_name": "com.example.alindor_brainai"
         }
       },
       "oauth_client": [
         {
-          "client_id": "518148769986-vnhhs1l4e3p7tgi5snaogg353irt8bkj.apps.googleusercontent.com",
+          "client_id": "544454413149-7srj2e6cbh5rupsceg5j8m9ao1t638pf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.smuct.event_reminder",
-            "certificate_hash": "4f8283870ebadb83d5c6bb7699be4e5d648f7b74"
+            "package_name": "com.example.alindor_brainai",
+            "certificate_hash": "dd3d50c98845212cafe2aa500a206cfca98ec89c"
           }
         },
         {
-          "client_id": "518148769986-vdclpuih51vml0ufh0gqt2h1rfsi67le.apps.googleusercontent.com",
+          "client_id": "544454413149-e94ljdlud8o00s96a6kt3a74ah098b81.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alindor_brainai",
+            "certificate_hash": "51e2def5d783b220019375d66e6189c68d4bbdf4"
+          }
+        },
+        {
+          "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAA87yOGL8V5Yd_5i9tw74vhrvLBGjzNRY"
+          "current_key": "AIzaSyCcLDDpoDeTvml5ZxQ5VpMKMKmooBk7dNM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "518148769986-vdclpuih51vml0ufh0gqt2h1rfsi67le.apps.googleusercontent.com",
+              "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "544454413149-h4h6af5uh8gqd86ndeb2e6gbrtsnd3r5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alindorBrainai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544454413149:android:78e63f4a1425a608cb36b4",
+        "android_client_info": {
+          "package_name": "com.smuct.event_reminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcLDDpoDeTvml5ZxQ5VpMKMKmooBk7dNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "544454413149-h4h6af5uh8gqd86ndeb2e6gbrtsnd3r5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alindorBrainai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544454413149:android:84d0817206a2bcefcb36b4",
+        "android_client_info": {
+          "package_name": "io.homeassistant.companion.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcLDDpoDeTvml5ZxQ5VpMKMKmooBk7dNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "544454413149-h4h6af5uh8gqd86ndeb2e6gbrtsnd3r5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alindorBrainai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544454413149:android:e024c6531fd87d24cb36b4",
+        "android_client_info": {
+          "package_name": "io.homeassistant.companion.android.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcLDDpoDeTvml5ZxQ5VpMKMKmooBk7dNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "544454413149-h4h6af5uh8gqd86ndeb2e6gbrtsnd3r5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alindorBrainai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544454413149:android:80a94f7328cfc1c9cb36b4",
+        "android_client_info": {
+          "package_name": "io.homeassistant.companion.android.minimal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcLDDpoDeTvml5ZxQ5VpMKMKmooBk7dNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "544454413149-h4h6af5uh8gqd86ndeb2e6gbrtsnd3r5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alindorBrainai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544454413149:android:5499c738cd454934cb36b4",
+        "android_client_info": {
+          "package_name": "io.homeassistant.companion.android.minimal.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcLDDpoDeTvml5ZxQ5VpMKMKmooBk7dNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544454413149-4tab4fgk8l9oeoc20bm5sd5m75t5tp46.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "544454413149-h4h6af5uh8gqd86ndeb2e6gbrtsnd3r5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alindorBrainai"
+              }
             }
           ]
         }

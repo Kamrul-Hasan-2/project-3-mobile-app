@@ -280,7 +280,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
               // ),
 
               const SizedBox(height: 10),
-              /*
               Row(
                 children: [
                   Text("Attach Media", style: titleStyle),
@@ -291,11 +290,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _mediaButton(
-                      "Image", Icons.image, Colors.blueAccent, ()=>()),
+                      "Image", Icons.image, Colors.blueAccent, _pickImages),
                   _mediaButton(
-                      "Video", Icons.videocam, Colors.black, ()=>()),
+                      "Video", Icons.videocam, Colors.black, _pickVideos),
                   _mediaButton(
-                      "File", Icons.attach_file, Colors.red, ()=>()),
+                      "File", Icons.attach_file, Colors.red, _pickFiles),
                 ],
               ),
               const SizedBox(height: 10),
@@ -331,7 +330,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ],
                 ),
               ),
-              */
+
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -496,20 +495,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Color _customColor = Colors.blue;
 
   Future<void> _validateData() async {
-    // debug print
-    debugPrint("Title: ${_titleController.text}");
-    if (_titleController.text.isNotEmpty) {
-      if (widget.task == null) {
-        debugPrint("Adding new task to DB");
-        await _addTaskToDb();
-      } else {
-        debugPrint("Updating existing task in DB");
+    if (_titleController.text.isNotEmpty && _descController.text.isNotEmpty) {
+      if (widget.task != null) {
         await _updateTaskInDb();
+      } else {
+        await _addTaskToDb();
       }
-    } else if (_titleController.text.isEmpty) {
+      Get.back();
+    } else {
       Get.snackbar(
         "Required",
-        "Title is required!",
+        "All fields are required!",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.white,
         colorText: pinkClr,
@@ -518,133 +514,93 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
+  // Future<void> _addTaskToDb() async {
+  //   Task task = Task(
+  //     title: _titleController.text,
+  //     description: _descController.text,
+  //     date: DateFormat.yMd().format(_selectedDate),
+  //     startTime: _startTime,
+  //     endTime: _endTime,
+  //     location: _locationController.text,
+  //     category: _selectedCategory,
+  //     remind: _selectedRemind,
+  //     repeat: _selectedRepeat,
+  //     color: _selectedColor,
+  //     photoPath: _selectedImage?.path ?? "No Image Found!",
+  //     videoPath: _selectedVideo?.path ?? "No Video Found!",
+  //     filePath: _selectedFile?.path ?? "No File Found!",
+  //     isCompleted: 0,
+  //   );
+  //   int value = await _taskController.addTask(task: task);
+  //   print("Task added with ID: $value");
+  // }
+
+  // Future<void> _addTaskToDb() async {
+  //   Task task = Task(
+  //     title: _titleController.text,
+  //     description: _descController.text,
+  //     date: DateFormat.yMd().format(_selectedDate),
+  //     startTime: _startTime,
+  //     endTime: _endTime,
+  //     location: _locationController.text,
+  //     category: _selectedCategory,
+  //     remind: _selectedRemind,
+  //     repeat: _selectedRepeat,
+  //     color: _selectedColor,
+  //     photoPath: _selectedImage?.path ?? "No Image Found!",
+  //     videoPath: _selectedVideo?.path ?? "No Video Found!",
+  //     filePath: _selectedFile?.path ?? "No File Found!",
+  //     isCompleted: 0,
+  //   );
+  //
+  //   await _taskfbController.addTask(task: task); // Firebase helper
+  //   print("Task added to Firebase!");
+  // }
+
   Future<void> _addTaskToDb() async {
-    try {
-      debugPrint("add_task_bar Starting _addTaskToDb");
-      
-      // Convert XFile images to paths
-      List<String> imagePaths = _selectedImages.map((file) => file.path).toList();
-      List<String> videoPaths = _selectedVideos.map((file) => file.path).toList();
-      List<String> filePaths = _selectedFiles.map((file) => file.path).toList();
+    Task task = Task(
+      title: _titleController.text,
+      description: _descController.text,
+      date: DateFormat.yMd().format(_selectedDate),
+      startTime: _startTime,
+      endTime: _endTime,
+      location: _locationController.text,
+      category: _selectedCategory,
+      remind: _selectedRemind,
+      repeat: _selectedRepeat,
+      color: _selectedColor,
+      isCompleted: 0,
+      photoPaths: _selectedImages.map((e) => e.path).toList(),
+      videoPaths: _selectedVideos.map((e) => e.path).toList(),
+      filePaths: _selectedFiles.map((e) => e.path).toList(),
+    );
 
-      debugPrint("add_task_bar Media files - Images: ${imagePaths.length}, Videos: ${videoPaths.length}, Files: ${filePaths.length}");
-
-      Task newTask = Task(
-        title: _titleController.text,
-        description: _descController.text,
-        date: DateFormat.yMd().format(_selectedDate),
-        startTime: _startTime,
-        endTime: _endTime,
-        location: _locationController.text,
-        category: _selectedCategory,
-        remind: _selectedRemind,
-        repeat: _selectedRepeat,
-        color: _selectedColor,
-        isCompleted: 0,
-        photoPaths: imagePaths,
-        videoPaths: videoPaths,
-        filePaths: filePaths,
-      );
-
-      debugPrint("add_task_bar Task object created: ${newTask.title}");
-      debugPrint("add_task_bar Adding new task to DB");
-      
-      await _taskfbController.addTask(task: newTask);
-      
-      debugPrint("add_task_bar Task added successfully, showing success message");
-      
-      // Show success message
-      Get.snackbar(
-        "Success",
-        "Task created successfully!",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-      );
-      
-      // Wait a brief moment for snackbar to display, then navigate back
-      await Future.delayed(const Duration(milliseconds: 300));
-      
-      debugPrint("add_task_bar Navigating back to home page");
-      if (mounted) {
-        Navigator.of(context).pop();
-        debugPrint("add_task_bar Navigation completed using Navigator.pop");
-      }
-    } catch (e, stackTrace) {
-      debugPrint("ERROR in add_task_bar._addTaskToDb: $e");
-      debugPrint("StackTrace: $stackTrace");
-      
-      String errorMessage = "Failed to create task";
-      if (e.toString().contains('not authenticated')) {
-        errorMessage = "Please login to create tasks";
-      } else {
-        errorMessage = "Failed to create task: ${e.toString().split(':').last}";
-      }
-      
-      Get.snackbar(
-        "Error",
-        errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 4),
-      );
-    }
+    await _taskfbController.addTask(task: task); // Your Firebase helper
+    print("Task with multiple paths added to Firebase!");
   }
 
+
   Future<void> _updateTaskInDb() async {
-    try {
-      // Convert XFile images to paths
-      List<String> imagePaths = _selectedImages.map((file) => file.path).toList();
-      List<String> videoPaths = _selectedVideos.map((file) => file.path).toList();
-      List<String> filePaths = _selectedFiles.map((file) => file.path).toList();
-
-      Task updatedTask = Task(
-        id: widget.task!.id,
-        title: _titleController.text,
-        description: _descController.text,
-        date: DateFormat.yMd().format(_selectedDate),
-        startTime: _startTime,
-        endTime: _endTime,
-        location: _locationController.text,
-        category: _selectedCategory,
-        remind: _selectedRemind,
-        repeat: _selectedRepeat,
-        color: _selectedColor,
-        isCompleted: widget.task!.isCompleted,
-        photoPaths: imagePaths,
-        videoPaths: videoPaths,
-        filePaths: filePaths,
-      );
-
-      await _taskfbController.updateEvents(updatedTask);
-      
-      Get.snackbar(
-        "Success",
-        "Task updated successfully!",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-      );
-      
-      // Wait a brief moment for snackbar to display, then navigate back
-      await Future.delayed(const Duration(milliseconds: 300));
-      
-      // Navigate back after successful update
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to update task: $e",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
+    Task updatedTask = Task(
+      id: widget.task!.id,
+      title: _titleController.text,
+      description: _descController.text,
+      date: DateFormat.yMd().format(_selectedDate),
+      startTime: _startTime,
+      endTime: _endTime,
+      location: _locationController.text,
+      category: _selectedCategory,
+      remind: _selectedRemind,
+      repeat: _selectedRepeat,
+      color: _selectedColor,
+      photoPaths: _selectedImages.map((e) => e.path).toList(),
+      videoPaths: _selectedVideos.map((e) => e.path).toList(),
+      filePaths: _selectedFiles.map((e) => e.path).toList(),
+      isCompleted: widget.task!.isCompleted,
+    );
+    await _taskfbController.updateEvents(updatedTask);
+    print("Task updated: ${updatedTask.title}");
+    print('Updating Task with ID: ${widget.task!.id}');
   }
 
   Widget _mediaButton(
@@ -864,4 +820,43 @@ class _AddTaskPageState extends State<AddTaskPage> {
       ),
     );
   }
+
+// multiple media selected -----------------
+  Future<void> _pickImages() async {
+    final List<XFile>? pickedImages = await _picker.pickMultiImage();
+    if (pickedImages != null) {
+      setState(() {
+        _selectedImages.addAll(pickedImages);
+      });
+    }
+  }
+
+  Future<void> _pickVideos() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+      allowMultiple: true,
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedVideos.addAll(result.paths.map((path) => XFile(path!)));
+      });
+    }
+  }
+
+
+  Future<void> _pickFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedFiles.addAll(result.paths.map((path) => XFile(path!)));
+      });
+    }
+  }
+
 }

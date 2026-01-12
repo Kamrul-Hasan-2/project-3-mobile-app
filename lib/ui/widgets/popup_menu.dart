@@ -18,7 +18,7 @@ extension PopupMenuAvatar on Widget {
       PopupMenuButton<String>(
       onSelected: (value) async {
         if (value == 'view') {
-          // Handle view profile action`
+          // Handle view profile action
         } else if (value == 'edit') {
           // Handle edit profile action
         } else if (value == 'pdf') {

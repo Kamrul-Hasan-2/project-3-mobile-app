@@ -1,7 +1,9 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:local_auth/local_auth.dart';
 
 class AppLockService {
   static final _storage = GetStorage();
+  static final LocalAuthentication _auth = LocalAuthentication();
 
   static Future<void> setPin(String pin) async {
     await _storage.write('app_pin', pin);

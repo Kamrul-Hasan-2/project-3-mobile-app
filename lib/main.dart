@@ -15,7 +15,7 @@ import 'package:event_manager/services/theme_services.dart';
 import 'package:event_manager/SignIn/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
-
+  
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();

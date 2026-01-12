@@ -1,27 +1,27 @@
+
 import 'dart:io';
-import 'package:event_manager/controllers/taskfb_controller.dart';
 import 'package:event_manager/models/task.dart';
 import 'package:event_manager/ui/media_preview/image_screen.dart';
 import 'package:event_manager/ui/media_preview/vdo_player_screen.dart';
 import 'package:event_manager/ui/theme.dart';
 import 'package:event_manager/ui/vdo_player_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_filex/open_filex.dart';
 
 class TaskTile extends StatefulWidget {
   final Task? task;
+  final VoidCallback? onMarkComplete;
+  final VoidCallback? onTap;
 
-  TaskTile(this.task);
+  TaskTile(this.task, {this.onMarkComplete, this.onTap});
 
   @override
   State<TaskTile> createState() => _TaskTileState();
 }
 
 class _TaskTileState extends State<TaskTile> {
-  bool isExpanded = false;
-  final _taskfbController = Get.find<TaskFbController>();
+  bool isExpanded = true;
 
   @override
   Widget build(BuildContext context) {
@@ -42,22 +42,6 @@ class _TaskTileState extends State<TaskTile> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Checkbox for marking task as completed
-                Container(
-                  margin: EdgeInsets.only(right: 8),
-                  child: Checkbox(
-                    value: widget.task?.isCompleted == 1,
-                    onChanged: widget.task?.isCompleted == 1 ? null : (value) {
-                      if (value == true && widget.task?.id != null) {
-                        _taskfbController.markTaskCompleted(widget.task!.id!);
-                      }
-                    },
-                    activeColor: Colors.white,
-                    checkColor: _getBGClr(widget.task?.color ?? 0),
-                    side: BorderSide(color: Colors.white, width: 2),
-                  ),
-                ),
-                
                 if (!isExpanded)
                   Container(
                     width: 50,
@@ -98,29 +82,56 @@ class _TaskTileState extends State<TaskTile> {
 
                 // Title & Description
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text( "Title : ${widget.task?.title ?? ''}",
-                        style: GoogleFonts.lato(
-                          textStyle: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  child: GestureDetector(
+                    onTap: widget.onTap,
+                    behavior: HitTestBehavior.opaque,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text( "Title : ${widget.task?.title ?? ''}",
+                          style: GoogleFonts.lato(
+                            textStyle: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        "Description : ${widget.task?.description ?? ''}",
-                        style: GoogleFonts.lato(
-                          textStyle: TextStyle(fontSize: 14, color: Colors.grey[100]),
+                        Text(
+                          "Description : ${widget.task?.description ?? ''}",
+                          style: GoogleFonts.lato(
+                            textStyle: TextStyle(fontSize: 14, color: Colors.grey[100]),
+                          ),
+                          overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                          maxLines: isExpanded ? null : 1,
                         ),
-                        overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                        maxLines: isExpanded ? null : 1,
-                      ),
 
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
+                // Mark Complete Button
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      widget.task?.isCompleted == 1 
+                        ? Icons.check_circle 
+                        : Icons.radio_button_unchecked,
+                      color: widget.task?.isCompleted == 1 
+                        ? Colors.greenAccent 
+                        : Colors.white,
+                      size: 28,
+                    ),
+                    onPressed: widget.onMarkComplete,
+                    tooltip: widget.task?.isCompleted == 1 
+                      ? 'Mark Incomplete' 
+                      : 'Mark Complete',
+                  ),
+                ),
+                SizedBox(width: 4),
                 // Expand Button
                 IconButton(
                   icon: Icon(
@@ -156,76 +167,87 @@ class _TaskTileState extends State<TaskTile> {
                 ),
                 SizedBox(height: 8),
 
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Photos
+                    // Photos - Full Width
                     if (widget.task?.photoPaths != null)
-                      ...widget.task!.photoPaths!.map((path) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => FullImageScreen(imagePath: path),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
+                      ...widget.task!.photoPaths!.map((path) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => FullImageScreen(imagePath: path),
+                              ),
+                            );
+                          },
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: FileImage(File(path)),
-                              fit: BoxFit.cover,
+                            child: Container(
+                              width: double.infinity,
+                              constraints: BoxConstraints(maxHeight: 200),
+                              child: Image.file(
+                                File(path),
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
                             ),
                           ),
                         ),
                       )),
+                    
+                    // Videos and Files in Wrap
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
 
-                    // Videos
-                    if (widget.task?.videoPaths != null)
-                      ...widget.task!.videoPaths!.map((path) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => VideoPlayerScreen(videoPath: path),
+                        // Videos
+                        if (widget.task?.videoPaths != null)
+                          ...widget.task!.videoPaths!.map((path) => GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => VideoPlayerScreen(videoPath: path),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.black45,
+                              ),
+                              child: Center(
+                                child: Icon(Icons.play_circle_fill, color: Colors.white),
+                              ),
                             ),
-                          );
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.black45,
-                          ),
-                          child: Center(
-                            child: Icon(Icons.play_circle_fill, color: Colors.white),
-                          ),
-                        ),
-                      )),
+                          )),
 
-                    // Files
-                    if (widget.task?.filePaths != null)
-                      ...widget.task!.filePaths!.map((path) => GestureDetector(
-                        onTap: () {
-                          OpenFilex.open(path);
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white24,
-                          ),
-                          child: Center(
-                            child: Icon(Icons.insert_drive_file, color: Colors.white),
-                          ),
-                        ),
-                      )),
+                        // Files
+                        if (widget.task?.filePaths != null)
+                          ...widget.task!.filePaths!.map((path) => GestureDetector(
+                            onTap: () {
+                              OpenFilex.open(path);
+                            },
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.white24,
+                              ),
+                              child: Center(
+                                child: Icon(Icons.insert_drive_file, color: Colors.white),
+                              ),
+                            ),
+                          )),
+                      ],
+                    ),
                   ],
                 ),
               ],

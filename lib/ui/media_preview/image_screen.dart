@@ -21,7 +21,17 @@ class FullImageScreen extends StatelessWidget {
           boundaryMargin: const EdgeInsets.all(20),
           minScale: 0.5,
           maxScale: 3.0,
-          child: Image.file(File(imagePath), fit: BoxFit.contain),
+          child: Container(
+            width: double.infinity,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+            ),
+            child: Image.file(
+              File(imagePath),
+              fit: BoxFit.contain,
+              width: double.infinity,
+            ),
+          ),
         ),
       ),
     );

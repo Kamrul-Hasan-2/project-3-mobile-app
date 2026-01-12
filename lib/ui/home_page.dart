@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:event_manager/SignIn/auth_service.dart';
 import 'package:event_manager/SignIn/login_screen.dart';
 import 'package:event_manager/cloud%20backup/backup_restore.dart';
@@ -7,7 +8,6 @@ import 'package:event_manager/pin/reset_pin_screen.dart';
 import 'package:event_manager/pin/set_pin_screen.dart';
 import 'package:event_manager/services/pdf_service.dart';
 import 'package:event_manager/ui/widgets/addtask_btn.dart';
-import 'package:event_manager/ui/widgets/progress_tracker_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -15,12 +15,14 @@ import 'package:get/get.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:event_manager/models/task.dart';
 import 'package:event_manager/services/notification_services.dart';
+import 'package:event_manager/services/theme_services.dart';
 import 'package:event_manager/ui/add_task_bar.dart';
 import 'package:event_manager/ui/theme.dart';
 import 'package:event_manager/ui/widgets/task_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:open_filex/open_filex.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -61,31 +63,7 @@ class _HomePageState extends State<HomePage> {
 
             _addDateBar(),
 
-            // Progress Tracker
-            Obx(() {
-              final totalTasks = _taskfbController.taskList.length;
-              final completedTasks = _taskfbController.taskList
-                  .where((task) => task.isCompleted == 1)
-                  .length;
-              final progress = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: ProgressTrackerWidget(
-                  progress: progress,
-                  backgroundColor: context.theme.primaryColor,
-                  progressColor: Colors.black54,
-                  height: 30,
-                  borderRadius: 10,
-                  text: '$completedTasks of $totalTasks tasks completed',
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              );
-            }),
+            _progressTracker(),
 
             const SizedBox(
               height: 10,
@@ -163,14 +141,7 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(width: 20),
         GestureDetector(
           onTap: () {
-            Get.snackbar(
-              "Under Development",
-              "This feature is under development.",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.white,
-              colorText: pinkClr,
-              icon: const Icon(Icons.warning_amber_rounded, color: Colors.red),
-            );
+            ThemeService().switchTheme();
           },
           child: Icon(
             Get.isDarkMode ? Icons.wb_sunny_outlined : Icons.nightlight_round,
@@ -215,6 +186,96 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _progressTracker() {
+    return Obx(() {
+      final todayTasks = _taskfbController.taskList.where((task) {
+        return task.date == DateFormat.yMd().format(_selectedDate);
+      }).toList();
+
+      final totalTasks = todayTasks.length;
+      final completedTasks = todayTasks.where((task) => task.isCompleted == 1).length;
+      final progress = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
+
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: context.theme.primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: context.theme.primaryColor.withOpacity(0.3),
+            width: 1.5,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Daily Progress',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Get.isDarkMode ? Colors.white : Colors.black87,
+                  ),
+                ),
+                Text(
+                  '$completedTasks / $totalTasks',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: context.theme.primaryColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Stack(
+              children: [
+                Container(
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                FractionallySizedBox(
+                  widthFactor: progress,
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          context.theme.primaryColor,
+                          context.theme.primaryColor.withOpacity(0.7),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              totalTasks == 0
+                  ? 'No tasks for today'
+                  : completedTasks == totalTasks
+                      ? '🎉 All tasks completed!'
+                      : '${(progress * 100).toStringAsFixed(0)}% complete',
+              style: TextStyle(
+                fontSize: 12,
+                color: Get.isDarkMode ? Colors.grey[400] : Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
   _addDateBar() {
     return DatePicker(
       DateTime.now(),
@@ -253,10 +314,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   _showTasks() {
     return Expanded(
       child: Obx(() {
+        // Show loading indicator
+        if (_taskfbController.isLoading.value && _taskfbController.taskList.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: context.theme.primaryColor,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Loading your tasks...',
+                  style: TextStyle(
+                    color: Get.isDarkMode ? Colors.white70 : Colors.black54,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
         final filteredTasks = _taskfbController.taskList.where((task) {
           return task.title!.toLowerCase().contains(_searchQuery) ||
               task.description!.toLowerCase().contains(_searchQuery) ||
@@ -302,11 +384,17 @@ class _HomePageState extends State<HomePage> {
                         child: FadeInAnimation(
                             child: Row(
                       children: [
-                        GestureDetector(
+                        TaskTile(
+                          task,
                           onTap: () {
                             _showBottomSheet(context, task);
                           },
-                          child: TaskTile(task),
+                          onMarkComplete: () {
+                            // Toggle completion status
+                            task.isCompleted = task.isCompleted == 1 ? 0 : 1;
+                            // Use optimized method for instant UI update
+                            _taskfbController.toggleTaskCompletion(task);
+                          },
                         )
                       ],
                     ))));
@@ -345,7 +433,7 @@ class _HomePageState extends State<HomePage> {
                 : _bottomSheetButton(
                     label: "Task Completed",
                     onTap: () {
-                      _taskfbController.markTaskCompleted(task.id!);
+                      // _taskController.markTaskCompleted(task.id!);
                       Get.back();
                     },
                     clr: primaryClr,
@@ -522,18 +610,114 @@ Widget _buildDrawer(BuildContext context) {
             leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
             title: const Text("Download PDF"),
             onTap: () async {
+              Navigator.pop(context);
+              // Show loading
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Text("Generating PDF..."),
+                    ],
+                  ),
+                  duration: Duration(seconds: 3),
+                )
+              );
+              
               try {
-                await PdfExportService.exportTask();
+                final filePath = await PdfExportService.exportTask();
+                ScaffoldMessenger.of(context).clearSnackBars();
+                
+                // Verify file exists
+                final file = File(filePath);
+                final exists = await file.exists();
+                
+                if (!exists) {
+                  throw Exception("PDF file was not created");
+                }
+                
+                // Extract just the folder name for display
+                final pathParts = filePath.split('/');
+                final fileName = pathParts.last;
+                
+                // Get a user-friendly path description
+                String location = filePath;
+                if (filePath.contains('/Android/data/')) {
+                  // App-specific external storage
+                  final appPart = filePath.split('/Android/data/')[1].split('/')[0];
+                  location = 'App Storage (Android/data/$appPart/files)';
+                } else if (filePath.contains('app_flutter')) {
+                  location = 'App Internal Storage';
+                } else if (filePath.contains('Documents')) {
+                  location = 'Documents';
+                } else if (filePath.contains('Download')) {
+                  location = 'Downloads';
+                }
+                
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("PDF export successful!"))
-
+                  SnackBar(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("✓ PDF saved successfully!"),
+                        SizedBox(height: 4),
+                        Text(
+                          "File: $fileName",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                          "Tap OPEN to view",
+                          style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 6),
+                    action: SnackBarAction(
+                      label: 'OPEN',
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        try {
+                          final result = await OpenFilex.open(filePath);
+                          if (result.type != ResultType.done) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("No app to open PDF. Please install a PDF reader."),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Could not open file: $e"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  )
                 );
               } catch (e) {
+                ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Error exporting PDF: $e")),
+                  SnackBar(
+                    content: Text("Error: ${e.toString().replaceAll('Exception: ', '')}"),
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 4),
+                  ),
                 );
               }
-              Navigator.pop(context);
             },
           ),
 
