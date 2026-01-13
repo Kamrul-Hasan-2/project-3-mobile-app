@@ -22,7 +22,7 @@ import 'package:event_manager/ui/widgets/task_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:open_file/open_file.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -669,14 +669,12 @@ Widget _buildDrawer(BuildContext context) {
                     textColor: Colors.white,
                     onPressed: () async {
                       try {
-                        final uri = Uri.file(filePath);
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri);
-                        } else {
+                        final result = await OpenFile.open(filePath);
+                        if (result.type != ResultType.done) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                  "No app to open PDF. Please install a PDF reader."),
+                                  result.message ?? "Could not open PDF. Please install a PDF reader."),
                               backgroundColor: Colors.orange,
                             ),
                           );
