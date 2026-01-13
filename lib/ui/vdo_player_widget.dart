@@ -7,7 +7,8 @@ import 'package:visibility_detector/visibility_detector.dart';
 class VideoPlayerWidget extends StatefulWidget {
   final String videoPath;
 
-  const VideoPlayerWidget({Key? key, required this.videoPath}) : super(key: key);
+  const VideoPlayerWidget({Key? key, required this.videoPath})
+      : super(key: key);
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -86,10 +87,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             onTap: _togglePlayPause, // Tap to pause/play
             child: _controller.value.isInitialized
                 ? AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            )
-                : Center(child: CircularProgressIndicator()), // Show loader while initializing
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  )
+                : Center(
+                    child:
+                        CircularProgressIndicator()), // Show loader while initializing
           ),
           // Play/Pause Icon
           if (!_isPlaying)

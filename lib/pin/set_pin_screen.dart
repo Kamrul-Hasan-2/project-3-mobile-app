@@ -44,8 +44,12 @@ class _SetPinScreenState extends State<SetPinScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Set App Lock PIN",),
-       backgroundColor: context.theme.primaryColor,),
+      appBar: AppBar(
+        title: Text(
+          "Set App Lock PIN",
+        ),
+        backgroundColor: context.theme.primaryColor,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -57,7 +61,6 @@ class _SetPinScreenState extends State<SetPinScreen> {
             //   keyboardType: TextInputType.number,
             //   decoration: InputDecoration(labelText: "Enter PIN"),
             // ),
-
 
             const SizedBox(height: 10), // Spacing between label and input field
             TextField(
@@ -74,13 +77,16 @@ class _SetPinScreenState extends State<SetPinScreen> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: const BorderSide(color: Colors.blue, width: 2),
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
             ),
 
             SizedBox(height: 20),
-            Text("Security Questions", style: TextStyle(fontWeight: FontWeight.bold)),
-            Text("These questions will help you when you forget your password. All your "
+            Text("Security Questions",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+                "These questions will help you when you forget your password. All your "
                 "security answers will be encrypted and stored only in the local device.",
                 style: TextStyle(fontWeight: FontWeight.normal)),
             DropdownButton<String>(
@@ -112,9 +118,12 @@ class _SetPinScreenState extends State<SetPinScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.blue, width: 2), // Highlighted when focused
+                  borderSide: BorderSide(
+                      color: Colors.blue, width: 2), // Highlighted when focused
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Adds spacing inside the field
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12), // Adds spacing inside the field
               ),
             ),
 
@@ -141,7 +150,7 @@ class _SetPinScreenState extends State<SetPinScreen> {
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: primaryClr ,
+                color: primaryClr,
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
@@ -155,7 +164,8 @@ class _SetPinScreenState extends State<SetPinScreen> {
               child: ElevatedButton(
                 onPressed: _savePin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent, // Make button background transparent
+                  backgroundColor:
+                      Colors.transparent, // Make button background transparent
                   shadowColor: Colors.transparent, // Remove default shadow
                   foregroundColor: Colors.white, // Text color
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
@@ -169,8 +179,6 @@ class _SetPinScreenState extends State<SetPinScreen> {
                 ),
               ),
             )
-
-
           ],
         ),
       ),

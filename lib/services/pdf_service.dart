@@ -13,7 +13,7 @@ class PdfExportService {
   static Future<String> exportTask() async {
     try {
       print("=== PDF Export Started ===");
-      
+
       // Get current user
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
@@ -85,20 +85,22 @@ class PdfExportService {
                 child: pw.Text(
                   "Event Report",
                   style: pw.TextStyle(
-                    fontSize: 28, 
-                    fontWeight: pw.FontWeight.bold, 
-                    font: ttf
-                  ),
+                      fontSize: 28, fontWeight: pw.FontWeight.bold, font: ttf),
                 ),
               ),
               pw.SizedBox(height: 20),
               pw.TableHelper.fromTextArray(
-                headers: ['Date', 'Title', 'Category', 'Time', 'Description', 'Location'],
+                headers: [
+                  'Date',
+                  'Title',
+                  'Category',
+                  'Time',
+                  'Description',
+                  'Location'
+                ],
                 data: tableData,
-                headerStyle: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold, 
-                  font: ttf
-                ),
+                headerStyle:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, font: ttf),
                 headerDecoration: pw.BoxDecoration(color: PdfColors.grey300),
                 cellAlignment: pw.Alignment.centerLeft,
                 cellStyle: pw.TextStyle(font: ttf),
@@ -116,12 +118,12 @@ class PdfExportService {
 
       // Request storage permission for Android
       Directory? downloadsDir;
-      
+
       if (Platform.isAndroid) {
         // Try to get external storage directory (works without special permissions)
         try {
           final externalDir = await getExternalStorageDirectory();
-          
+
           if (externalDir != null) {
             // Use the app's external files directory
             downloadsDir = externalDir;
@@ -150,24 +152,24 @@ class PdfExportService {
       // Write the PDF
       final bytes = await pdf.save();
       print("PDF bytes generated: ${bytes.length} bytes");
-      
+
       await outputFile.writeAsBytes(bytes);
       print("PDF bytes written to file");
-      
+
       // Verify the file exists
       final fileExists = await outputFile.exists();
       if (!fileExists) {
         print("ERROR: File does not exist after writing!");
         throw Exception("File was not saved successfully");
       }
-      
+
       final fileSize = await outputFile.length();
       print("✓ PDF saved successfully!");
       print("  Path: ${outputFile.path}");
       print("  Size: $fileSize bytes");
       print("  Exists: $fileExists");
       print("=== PDF Export Complete ===");
-      
+
       return outputFile.path; // Return the file path
     } catch (e) {
       print("PDF Export Error Details: $e");
@@ -175,5 +177,3 @@ class PdfExportService {
     }
   }
 }
-
-

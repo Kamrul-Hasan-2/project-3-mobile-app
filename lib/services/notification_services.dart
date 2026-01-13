@@ -9,46 +9,74 @@ import 'package:timezone/data/latest_all.dart' as tz;
 
 class NotifyHelper {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-  static final Set<String> _notifiedTasks = {}; // Using Set to prevent duplicates
+      FlutterLocalNotificationsPlugin();
+  static final Set<String> _notifiedTasks =
+      {}; // Using Set to prevent duplicates
   final TaskFbController _taskController = Get.find<TaskFbController>();
 
   NotifyHelper() {
     _startMonitoringTasks();
   }
 
-
   static Future<void> initNotification() async {
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('flutter_logo');
+        AndroidInitializationSettings('flutter_logo');
+
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
 
     await _notificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         print("Notification Clicked!");
+        // Handle notification tap - navigate to appropriate screen
+        if (response.payload != null) {
+          print("Notification payload: ${response.payload}");
+          // You can add navigation logic here
+        }
       },
     );
 
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    // Create notification channels for Android
+    const AndroidNotificationChannel taskChannel = AndroidNotificationChannel(
       'task_channel',
       'Task Notifications',
+      description: 'Notifications for scheduled tasks and reminders',
+      importance: Importance.high,
+    );
+
+    const AndroidNotificationChannel fcmChannel = AndroidNotificationChannel(
+      'fcm_channel',
+      'FCM Notifications',
+      description: 'Firebase Cloud Messaging notifications',
       importance: Importance.high,
     );
 
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-  }
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(taskChannel);
 
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(fcmChannel);
+  }
 
   Future<void> scheduledNotification(
       int hour, int minute, String title, String body, String repeat) async {
@@ -71,32 +99,32 @@ class NotifyHelper {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: _getDateTimeComponents(repeat),
     );
   }
 
   Future<void> showImmediateNotification(String title, String body) async {
     const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'task_channel',
       'Task Notifications',
       importance: Importance.high,
       priority: Priority.high,
     );
 
-    const NotificationDetails details = NotificationDetails(android: androidDetails);
+    const NotificationDetails details =
+        NotificationDetails(android: androidDetails);
 
     int uniqueId = DateTime.now().millisecondsSinceEpoch.remainder(100000);
 
     await _notificationsPlugin.show(uniqueId, title, body, details);
   }
 
-
   tz.TZDateTime _convertTime(int hour, int minute, String repeat) {
     final now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate =
-    tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
 
     if (scheduledDate.isBefore(now)) {
       if (repeat == "Daily") {
@@ -137,8 +165,8 @@ class NotifyHelper {
       for (var task in _taskController.taskList) {
         if (task.startTime == null) continue;
 
-        String taskTime =
-        DateFormat("hh:mm a").format(DateFormat("h:mm a").parse(task.startTime!));
+        String taskTime = DateFormat("hh:mm a")
+            .format(DateFormat("h:mm a").parse(task.startTime!));
 
         if (taskTime == currentTime && !_notifiedTasks.contains(task.title)) {
           showImmediateNotification(

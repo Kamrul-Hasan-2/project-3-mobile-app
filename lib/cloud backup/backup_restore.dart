@@ -55,7 +55,8 @@ class BackupRestore {
 
     final uid = user.uid;
 
-    final userDoc = await FirebaseFirestore.instance.collection('tasks').doc(uid).get();
+    final userDoc =
+        await FirebaseFirestore.instance.collection('tasks').doc(uid).get();
     final tasksSnapshot = await FirebaseFirestore.instance
         .collection('tasks')
         .doc(uid)
@@ -88,7 +89,10 @@ class BackupRestore {
     final backupData = jsonDecode(jsonStr);
 
     if (backupData['user'] != null) {
-      await FirebaseFirestore.instance.collection('tasks').doc(uid).set(backupData['user']);
+      await FirebaseFirestore.instance
+          .collection('tasks')
+          .doc(uid)
+          .set(backupData['user']);
     }
 
     if (backupData['tasks'] != null) {
@@ -104,8 +108,4 @@ class BackupRestore {
       Get.find<TaskFbController>().getTasks();
     }
   }
-
-
 }
-
-

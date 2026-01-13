@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final AuthService _authService = AuthService();
 
-  List<String> texts = [ "Event Reminder"];
+  List<String> texts = ["Event Reminder"];
   int currentIndex = 0;
   bool _isObscure = true;
 
@@ -73,7 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
   // Anonymous User create
   Future<void> signInAnonymously() async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInAnonymously();
       User? user = userCredential.user;
 
       if (user != null) {
@@ -95,159 +96,166 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-     return WillPopScope(
-        onWillPop: () async {
-      SystemNavigator.pop();
-      return false;
-    },
-    child: Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-        backgroundColor: Colors.grey.shade50,
-      ),
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 20),
-                Image.asset('images/bg.jpg', height: 200),
-                SizedBox(height: 20),
-                AnimatedSwitcher(
-                  duration: Duration(milliseconds: 800),
-                  transitionBuilder: (widget, animation) {
-                    return FadeTransition(opacity: animation, child: widget);
-                  },
-                  child: Text(
-                    texts[currentIndex],
-                    key: ValueKey<String>(texts[currentIndex]),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: "Lato",
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent,
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+          backgroundColor: Colors.grey.shade50,
+        ),
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(height: 20),
+                  Image.asset('images/bg.jpg', height: 200),
+                  SizedBox(height: 20),
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 800),
+                    transitionBuilder: (widget, animation) {
+                      return FadeTransition(opacity: animation, child: widget);
+                    },
+                    child: Text(
+                      texts[currentIndex],
+                      key: ValueKey<String>(texts[currentIndex]),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: "Lato",
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueAccent,
+                      ),
                     ),
                   ),
-                ),
-                // SizedBox(height: 30),
-                // TextField(
-                //   controller: emailController,
-                //   decoration: InputDecoration(
-                //     labelText: 'Email',
-                //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                //   ),
-                // ),
-                // SizedBox(height: 15),
-                // TextField(
-                //   controller: passwordController,
-                //   obscureText: _isObscure,
-                //   decoration: InputDecoration(
-                //     labelText: 'Password',
-                //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                //     suffixIcon: IconButton(
-                //       icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
-                //       onPressed: () {
-                //         setState(() {
-                //           _isObscure = !_isObscure;
-                //         });
-                //       },
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 30),
-                // ElevatedButton.icon(
-                //   onPressed: login,
-                //   icon: Icon(Icons.login, color: Colors.white),
-                //   label: Text('Login', style: TextStyle(color: Colors.white)),
-                //   style: ElevatedButton.styleFrom(
-                //     backgroundColor: Colors.blueAccent,
-                //     padding: EdgeInsets.symmetric(vertical: 12),
-                //     shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(10),
-                //     ),
-                //   ),
-                // ),
+                  // SizedBox(height: 30),
+                  // TextField(
+                  //   controller: emailController,
+                  //   decoration: InputDecoration(
+                  //     labelText: 'Email',
+                  //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 15),
+                  // TextField(
+                  //   controller: passwordController,
+                  //   obscureText: _isObscure,
+                  //   decoration: InputDecoration(
+                  //     labelText: 'Password',
+                  //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  //     suffixIcon: IconButton(
+                  //       icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+                  //       onPressed: () {
+                  //         setState(() {
+                  //           _isObscure = !_isObscure;
+                  //         });
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 30),
+                  // ElevatedButton.icon(
+                  //   onPressed: login,
+                  //   icon: Icon(Icons.login, color: Colors.white),
+                  //   label: Text('Login', style: TextStyle(color: Colors.white)),
+                  //   style: ElevatedButton.styleFrom(
+                  //     backgroundColor: Colors.blueAccent,
+                  //     padding: EdgeInsets.symmetric(vertical: 12),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(10),
+                  //     ),
+                  //   ),
+                  // ),
 
-                SizedBox(height: 100),
-                ElevatedButton.icon(
-                  onPressed: loginWithGoogle,
-                  icon: Icon(Icons.g_mobiledata, color: Colors.white),
-                  label: Text('Sign in with Google', style: TextStyle(color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  SizedBox(height: 100),
+                  ElevatedButton.icon(
+                    onPressed: loginWithGoogle,
+                    icon: Icon(Icons.g_mobiledata, color: Colors.white),
+                    label: Text('Sign in with Google',
+                        style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
-                ),
 
-                SizedBox(height: 30),
+                  SizedBox(height: 30),
 
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    _showSnackBar('Continuing as Guest...');
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      _showSnackBar('Continuing as Guest...');
 
-                    await signInAnonymously(); // Ensure Firebase signs in anonymously
+                      await signInAnonymously(); // Ensure Firebase signs in anonymously
 
-                    Get.off(() => HomePage()); // Navigate to HomePage after successful sign-in
-                  },
-                  icon: Icon(Icons.person_outline, color: Colors.white),
-                  label: Text('Continue as Guest', style: TextStyle(color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      Get.off(() =>
+                          HomePage()); // Navigate to HomePage after successful sign-in
+                    },
+                    icon: Icon(Icons.person_outline, color: Colors.white),
+                    label: Text('Continue as Guest',
+                        style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 60),
+                  const SizedBox(height: 60),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('images/smuct.jpg', height: 50, width: 50,),
-                    const SizedBox(width: 8),
-                    const Text("Powered by SMUCT",style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                        color: Color(0xFF2F3B4B)
-                    ),)
-                  ],
-                )
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'images/smuct.jpg',
+                        height: 50,
+                        width: 50,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        "Powered by SMUCT",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2F3B4B)),
+                      )
+                    ],
+                  )
 
-
-                // SizedBox(height: 20),
-                // TextButton(
-                //   onPressed: () => Get.to(() => RegisterScreen()),
-                //   child: Text.rich(
-                //     TextSpan(
-                //       children: [
-                //         TextSpan(text: "Don't have an account? "),
-                //         TextSpan(
-                //           text: 'Register',
-                //           style: TextStyle(decoration: TextDecoration.underline),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-              ],
+                  // SizedBox(height: 20),
+                  // TextButton(
+                  //   onPressed: () => Get.to(() => RegisterScreen()),
+                  //   child: Text.rich(
+                  //     TextSpan(
+                  //       children: [
+                  //         TextSpan(text: "Don't have an account? "),
+                  //         TextSpan(
+                  //           text: 'Register',
+                  //           style: TextStyle(decoration: TextDecoration.underline),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-     );
+    );
   }
-
 
   // @override
   // void dispose() {
@@ -256,4 +264,3 @@ class _LoginScreenState extends State<LoginScreen> {
   //   super.dispose();
   // }
 }
-

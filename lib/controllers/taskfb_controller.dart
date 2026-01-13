@@ -61,7 +61,7 @@ class TaskFbController extends GetxController {
           taskList[index].isCompleted = task.isCompleted;
           taskList.refresh(); // Trigger UI update
         }
-        
+
         // Update Firebase in background
         await FBdbHelper.updateTaskInFirebase(task);
         print("Task completion toggled successfully");

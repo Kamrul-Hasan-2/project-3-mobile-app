@@ -10,7 +10,6 @@ class FullImageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         title: Text('Image Preview'),
         backgroundColor: context.theme.primaryColor,

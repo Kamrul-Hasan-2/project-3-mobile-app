@@ -47,9 +47,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     refreshTasks();
     NotifyHelper();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +62,6 @@ class _HomePageState extends State<HomePage> {
             _addDateBar(),
 
             _progressTracker(),
-
-            const SizedBox(
-              height: 10,
-            ),
 
             // _isSearchVisible ? _searchBar() : Container(),
 
@@ -86,8 +80,7 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: Colors.white, width: 1.5),
+                border: Border.all(color: Colors.white, width: 1.5),
               ),
               child: TextField(
                 controller: _searchController,
@@ -108,7 +101,6 @@ class _HomePageState extends State<HomePage> {
               ),
             )
           : null,
-
       leading: IconButton(
         icon: const Icon(Icons.menu, color: Colors.white),
         onPressed: () {
@@ -116,7 +108,6 @@ class _HomePageState extends State<HomePage> {
               .openDrawer(); //  Use GlobalKey to open Drawer
         },
       ),
-
       actions: [
         if (!_isSearchVisible)
           GestureDetector(
@@ -156,7 +147,7 @@ class _HomePageState extends State<HomePage> {
 
   _addTaskBar() {
     return Container(
-      margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -193,15 +184,16 @@ class _HomePageState extends State<HomePage> {
       }).toList();
 
       final totalTasks = todayTasks.length;
-      final completedTasks = todayTasks.where((task) => task.isCompleted == 1).length;
+      final completedTasks =
+          todayTasks.where((task) => task.isCompleted == 1).length;
       final progress = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
 
       return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: context.theme.primaryColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: context.theme.primaryColor.withOpacity(0.3),
             width: 1.5,
@@ -216,35 +208,39 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   'Daily Progress',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                     color: Get.isDarkMode ? Colors.white : Colors.black87,
                   ),
                 ),
                 Text(
-                  '$completedTasks / $totalTasks',
+                  totalTasks == 0
+                      ? '0 tasks'
+                      : completedTasks == totalTasks
+                          ? '🎉 $completedTasks/$totalTasks'
+                          : '$completedTasks/$totalTasks (${(progress * 100).toStringAsFixed(0)}%)',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: context.theme.primaryColor,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Stack(
               children: [
                 Container(
-                  height: 8,
+                  height: 5,
                   decoration: BoxDecoration(
                     color: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
                 FractionallySizedBox(
                   widthFactor: progress,
                   child: Container(
-                    height: 8,
+                    height: 5,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -252,23 +248,11 @@ class _HomePageState extends State<HomePage> {
                           context.theme.primaryColor.withOpacity(0.7),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              totalTasks == 0
-                  ? 'No tasks for today'
-                  : completedTasks == totalTasks
-                      ? '🎉 All tasks completed!'
-                      : '${(progress * 100).toStringAsFixed(0)}% complete',
-              style: TextStyle(
-                fontSize: 12,
-                color: Get.isDarkMode ? Colors.grey[400] : Colors.grey[600],
-              ),
             ),
           ],
         ),
@@ -277,40 +261,43 @@ class _HomePageState extends State<HomePage> {
   }
 
   _addDateBar() {
-    return DatePicker(
-      DateTime.now(),
-      height: 100,
-      width: 80,
-      initialSelectedDate: DateTime.now(),
-      selectionColor: primaryClr,
-      selectedTextColor: Colors.white,
-      dateTextStyle: GoogleFonts.lato(
-        textStyle: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: Colors.grey,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: DatePicker(
+        DateTime.now(),
+        height: 85,
+        width: 65,
+        initialSelectedDate: DateTime.now(),
+        selectionColor: primaryClr,
+        selectedTextColor: Colors.white,
+        dateTextStyle: GoogleFonts.lato(
+          textStyle: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey,
+          ),
         ),
-      ),
-      dayTextStyle: GoogleFonts.lato(
-        textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: Colors.grey,
+        dayTextStyle: GoogleFonts.lato(
+          textStyle: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey,
+          ),
         ),
-      ),
-      monthTextStyle: GoogleFonts.lato(
-        textStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Colors.grey,
+        monthTextStyle: GoogleFonts.lato(
+          textStyle: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey,
+          ),
         ),
+        onDateChange: (date) {
+          setState(() {
+            _selectedDate = date;
+            print("Selected date: $_selectedDate");
+          });
+        },
       ),
-      onDateChange: (date) {
-        setState(() {
-          _selectedDate = date;
-          print("Selected date: $_selectedDate");
-        });
-      },
     );
   }
 
@@ -318,7 +305,8 @@ class _HomePageState extends State<HomePage> {
     return Expanded(
       child: Obx(() {
         // Show loading indicator
-        if (_taskfbController.isLoading.value && _taskfbController.taskList.isEmpty) {
+        if (_taskfbController.isLoading.value &&
+            _taskfbController.taskList.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -345,8 +333,9 @@ class _HomePageState extends State<HomePage> {
               task.category!.toLowerCase().contains(_searchQuery);
         }).toList();
 
-        final tasksToDisplay =
-            _searchQuery.isNotEmpty ? filteredTasks : _taskfbController.taskList;
+        final tasksToDisplay = _searchQuery.isNotEmpty
+            ? filteredTasks
+            : _taskfbController.taskList;
 
         return ListView.builder(
             itemCount: tasksToDisplay.length,
@@ -519,7 +508,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-  //    -- ---  Nav Drawer    ---  --
+//    -- ---  Nav Drawer    ---  --
 Widget _buildDrawer(BuildContext context) {
   User? user = FirebaseAuth.instance.currentUser;
   print("Display Name: ${user?.displayName}");
@@ -539,9 +528,10 @@ Widget _buildDrawer(BuildContext context) {
                 CircleAvatar(
                   radius: 30,
                   backgroundColor: Colors.white,
-                  child:
-                  Text(
-                    user != null && user.displayName != null && user.displayName!.isNotEmpty
+                  child: Text(
+                    user != null &&
+                            user.displayName != null &&
+                            user.displayName!.isNotEmpty
                         ? user.displayName![0].toUpperCase()
                         : (user != null && user.isAnonymous ? 'G' : 'U'),
                     textAlign: TextAlign.center,
@@ -552,18 +542,19 @@ Widget _buildDrawer(BuildContext context) {
                     ),
                   ),
                 ),
-        ///  If Anonymous user ------------------
+
+                ///  If Anonymous user ------------------
                 const SizedBox(height: 10),
                 if (user != null && user.isAnonymous)
                   GestureDetector(
                     onTap: () async {
-                      await  linkAnonymousWithGoogle(context);
+                      await linkAnonymousWithGoogle(context);
                       await FirebaseAuth.instance.currentUser?.reload();
                       User? updatedUser = FirebaseAuth.instance.currentUser;
-                      print("Updated Display Name: ${updatedUser?.displayName}");
+                      print(
+                          "Updated Display Name: ${updatedUser?.displayName}");
                       Get.back();
                     },
-
                     child: const Text(
                       'Sign in with Google',
                       style: TextStyle(
@@ -573,8 +564,9 @@ Widget _buildDrawer(BuildContext context) {
                       ),
                     ),
                   )
-              /// ----------------------
-                  else if (user != null)
+
+                /// ----------------------
+                else if (user != null)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -596,7 +588,10 @@ Widget _buildDrawer(BuildContext context) {
             ),
           ),
 
-          SizedBox(height: 40,),
+          SizedBox(
+            height: 40,
+          ),
+
           ///  Home -----------------
           ListTile(
             leading: const Icon(Icons.home, color: Colors.blue),
@@ -604,7 +599,10 @@ Widget _buildDrawer(BuildContext context) {
             onTap: () => Navigator.pop(context),
           ),
 
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
+
           ///  Download PDF  ----------------
           ListTile(
             leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
@@ -612,47 +610,46 @@ Widget _buildDrawer(BuildContext context) {
             onTap: () async {
               Navigator.pop(context);
               // Show loading
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
-                      SizedBox(width: 16),
-                      Text("Generating PDF..."),
-                    ],
-                  ),
-                  duration: Duration(seconds: 3),
-                )
-              );
-              
+                    ),
+                    SizedBox(width: 16),
+                    Text("Generating PDF..."),
+                  ],
+                ),
+                duration: Duration(seconds: 3),
+              ));
+
               try {
                 final filePath = await PdfExportService.exportTask();
                 ScaffoldMessenger.of(context).clearSnackBars();
-                
+
                 // Verify file exists
                 final file = File(filePath);
                 final exists = await file.exists();
-                
+
                 if (!exists) {
                   throw Exception("PDF file was not created");
                 }
-                
+
                 // Extract just the folder name for display
                 final pathParts = filePath.split('/');
                 final fileName = pathParts.last;
-                
+
                 // Get a user-friendly path description
                 String location = filePath;
                 if (filePath.contains('/Android/data/')) {
                   // App-specific external storage
-                  final appPart = filePath.split('/Android/data/')[1].split('/')[0];
+                  final appPart =
+                      filePath.split('/Android/data/')[1].split('/')[0];
                   location = 'App Storage (Android/data/$appPart/files)';
                 } else if (filePath.contains('app_flutter')) {
                   location = 'App Internal Storage';
@@ -661,58 +658,59 @@ Widget _buildDrawer(BuildContext context) {
                 } else if (filePath.contains('Download')) {
                   location = 'Downloads';
                 }
-                
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("✓ PDF saved successfully!"),
-                        SizedBox(height: 4),
-                        Text(
-                          "File: $fileName",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        Text(
-                          "Tap OPEN to view",
-                          style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic),
-                        ),
-                      ],
-                    ),
-                    backgroundColor: Colors.green,
-                    duration: Duration(seconds: 6),
-                    action: SnackBarAction(
-                      label: 'OPEN',
-                      textColor: Colors.white,
-                      onPressed: () async {
-                        try {
-                          final result = await OpenFilex.open(filePath);
-                          if (result.type != ResultType.done) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("No app to open PDF. Please install a PDF reader."),
-                                backgroundColor: Colors.orange,
-                              ),
-                            );
-                          }
-                        } catch (e) {
+
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("✓ PDF saved successfully!"),
+                      SizedBox(height: 4),
+                      Text(
+                        "File: $fileName",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      Text(
+                        "Tap OPEN to view",
+                        style: TextStyle(
+                            fontSize: 11, fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 6),
+                  action: SnackBarAction(
+                    label: 'OPEN',
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      try {
+                        final result = await OpenFilex.open(filePath);
+                        if (result.type != ResultType.done) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text("Could not open file: $e"),
-                              backgroundColor: Colors.red,
+                              content: Text(
+                                  "No app to open PDF. Please install a PDF reader."),
+                              backgroundColor: Colors.orange,
                             ),
                           );
                         }
-                      },
-                    ),
-                  )
-                );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Could not open file: $e"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ));
               } catch (e) {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Error: ${e.toString().replaceAll('Exception: ', '')}"),
+                    content: Text(
+                        "Error: ${e.toString().replaceAll('Exception: ', '')}"),
                     backgroundColor: Colors.red,
                     duration: Duration(seconds: 4),
                   ),
@@ -721,7 +719,9 @@ Widget _buildDrawer(BuildContext context) {
             },
           ),
 
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
 
           ///  Backup Data ----------------
           // ListTile(
@@ -755,7 +755,9 @@ Widget _buildDrawer(BuildContext context) {
               }
             },
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
 
           /// Restore Data--------------
           // ListTile(
@@ -779,7 +781,8 @@ Widget _buildDrawer(BuildContext context) {
               if (currentUser != null) {
                 await BackupRestore.restoreFromLocal();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Database restored successfully!')),
+                  const SnackBar(
+                      content: Text('Database restored successfully!')),
                 );
                 Navigator.pop(context);
               } else {
@@ -790,23 +793,33 @@ Widget _buildDrawer(BuildContext context) {
             },
           ),
 
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
+
           ///  App Lock ------------
           ListTile(
-            leading: const Icon(Icons.lock_open_rounded, color: Colors.purpleAccent),
+            leading:
+                const Icon(Icons.lock_open_rounded, color: Colors.purpleAccent),
             title: const Text("App Lock"),
             onTap: () {
               AppLockService.isPinSet().then((isPinSet) {
                 if (isPinSet) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPinScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ResetPinScreen()));
                 } else {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SetPinScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SetPinScreen()));
                 }
               });
               Navigator.pop(context);
             },
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
 
           ///  Logout-----------------
           ListTile(
@@ -822,14 +835,14 @@ Widget _buildDrawer(BuildContext context) {
   );
 }
 
-
 Future<void> linkAnonymousWithGoogle(BuildContext context) async {
   try {
     await GoogleSignIn().signOut();
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) return;
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
@@ -841,7 +854,8 @@ Future<void> linkAnonymousWithGoogle(BuildContext context) async {
     if (currentUser != null && currentUser.isAnonymous) {
       try {
         // Try to link
-        UserCredential result = await currentUser.linkWithCredential(credential);
+        UserCredential result =
+            await currentUser.linkWithCredential(credential);
         final email = result.user?.email ?? 'User';
 
         print("Anonymous account linked to Google. UID: ${result.user?.uid}");
@@ -896,8 +910,6 @@ Future<void> linkAnonymousWithGoogle(BuildContext context) async {
   }
 }
 
-
-
 // Logout Confirmation Dialog -------------
 void _showLogoutConfirmation() {
   Get.defaultDialog(
@@ -912,4 +924,3 @@ void _showLogoutConfirmation() {
     },
   );
 }
-

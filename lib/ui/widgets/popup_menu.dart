@@ -11,11 +11,9 @@ import 'package:get/get.dart';
 final AuthService _authService = AuthService();
 
 extension PopupMenuAvatar on Widget {
-
   Widget popupMenu(
       {required BuildContext context, DateTime? startDate, DateTime? endDate}) {
-    return
-      PopupMenuButton<String>(
+    return PopupMenuButton<String>(
       onSelected: (value) async {
         if (value == 'view') {
           // Handle view profile action

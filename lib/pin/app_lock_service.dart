@@ -40,6 +40,7 @@ class AppLockService {
     final storedPin = await getPin();
     return storedPin == enteredPin;
   }
+
   // Remove the App Lock PIN
   static Future<bool> removePin(String enteredPin) async {
     final storedPin = await getPin();
@@ -78,8 +79,4 @@ class AppLockService {
   //     return false;
   //   }
   // }
-
-
 }
-
-

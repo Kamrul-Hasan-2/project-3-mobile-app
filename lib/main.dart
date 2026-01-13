@@ -1,9 +1,8 @@
-
 import 'package:event_manager/controllers/taskfb_controller.dart';
-import 'package:event_manager/db/fb_db_helper.dart';
 import 'package:event_manager/pin/app_lock_service.dart';
 import 'package:event_manager/pin/pin_screen.dart';
 import 'package:event_manager/services/notification_services.dart';
+import 'package:event_manager/services/fcm_notification_service.dart';
 import 'package:event_manager/ui/home_page.dart';
 import 'package:event_manager/ui/theme.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ import 'package:event_manager/services/theme_services.dart';
 import 'package:event_manager/SignIn/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
-  
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
@@ -23,6 +22,10 @@ Future<void> main() async {
   // await FBdbHelper.;
   tz.initializeTimeZones();
   await NotifyHelper.initNotification();
+
+  // Initialize Firebase Cloud Messaging
+  await FCMNotificationService.initialize();
+
   Get.put(TaskFbController());
 
   bool isPinSet = await AppLockService.isPinSet();
@@ -54,9 +57,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeService().theme,
       home: isPinSet
           ? PinEntryScreen()
-          : (user != null
-              ? HomePage()
-              : LoginScreen()),
+          : (user != null ? HomePage() : LoginScreen()),
     );
   }
 }

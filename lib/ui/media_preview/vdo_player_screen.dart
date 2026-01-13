@@ -34,14 +34,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Video Preview"),
-      backgroundColor: context.theme.primaryColor,),
+      appBar: AppBar(
+        title: const Text("Video Preview"),
+        backgroundColor: context.theme.primaryColor,
+      ),
       body: Center(
         child: _controller.value.isInitialized
             ? AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
-          child: VideoPlayer(_controller),
-        )
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
             : const CircularProgressIndicator(),
       ),
       floatingActionButton: FloatingActionButton(

@@ -1,4 +1,3 @@
-
 import 'package:event_manager/SignIn/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +11,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final AuthService _authService = AuthService();
 
   bool _isPasswordObscure = true;
@@ -63,7 +63,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,12 +78,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             TextField(
               controller: emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
             SizedBox(height: 15),
@@ -93,9 +95,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               obscureText: _isPasswordObscure,
               decoration: InputDecoration(
                 labelText: 'Password',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 suffixIcon: IconButton(
-                  icon: Icon(_isPasswordObscure ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(_isPasswordObscure
+                      ? Icons.visibility
+                      : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
                       _isPasswordObscure = !_isPasswordObscure;
@@ -110,9 +115,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               obscureText: _isConPasswordObscure,
               decoration: InputDecoration(
                 labelText: 'Confirm Password',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 suffixIcon: IconButton(
-                  icon: Icon(_isConPasswordObscure ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(_isConPasswordObscure
+                      ? Icons.visibility
+                      : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
                       _isConPasswordObscure = !_isConPasswordObscure;
@@ -121,7 +129,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-
             SizedBox(height: 40),
             ElevatedButton(
               onPressed: register,
@@ -148,7 +155,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       text: 'Login',
                       style: TextStyle(
                         color: Colors.grey[700],
-                        decoration: TextDecoration.underline, // This applies underline
+                        decoration:
+                            TextDecoration.underline, // This applies underline
                         fontWeight: FontWeight.bold,
                       ),
                     ),

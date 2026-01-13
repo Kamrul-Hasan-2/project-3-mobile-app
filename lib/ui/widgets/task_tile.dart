@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:event_manager/models/task.dart';
 import 'package:event_manager/ui/media_preview/image_screen.dart';
@@ -49,7 +48,8 @@ class _TaskTileState extends State<TaskTile> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        Icon(Icons.calendar_today_sharp, color: Colors.white, size: 52),
+                        Icon(Icons.calendar_today_sharp,
+                            color: Colors.white, size: 52),
                         Container(
                           margin: EdgeInsets.only(top: 14),
                           child: Column(
@@ -88,22 +88,27 @@ class _TaskTileState extends State<TaskTile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text( "Title : ${widget.task?.title ?? ''}",
+                        Text(
+                          "Title : ${widget.task?.title ?? ''}",
                           style: GoogleFonts.lato(
                             textStyle: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           "Description : ${widget.task?.description ?? ''}",
                           style: GoogleFonts.lato(
-                            textStyle: TextStyle(fontSize: 14, color: Colors.grey[100]),
+                            textStyle: TextStyle(
+                                fontSize: 14, color: Colors.grey[100]),
                           ),
-                          overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                          overflow: isExpanded
+                              ? TextOverflow.visible
+                              : TextOverflow.ellipsis,
                           maxLines: isExpanded ? null : 1,
                         ),
-
                       ],
                     ),
                   ),
@@ -117,18 +122,18 @@ class _TaskTileState extends State<TaskTile> {
                   ),
                   child: IconButton(
                     icon: Icon(
-                      widget.task?.isCompleted == 1 
-                        ? Icons.check_circle 
-                        : Icons.radio_button_unchecked,
-                      color: widget.task?.isCompleted == 1 
-                        ? Colors.greenAccent 
-                        : Colors.white,
+                      widget.task?.isCompleted == 1
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color: widget.task?.isCompleted == 1
+                          ? Colors.greenAccent
+                          : Colors.white,
                       size: 28,
                     ),
                     onPressed: widget.onMarkComplete,
-                    tooltip: widget.task?.isCompleted == 1 
-                      ? 'Mark Incomplete' 
-                      : 'Mark Complete',
+                    tooltip: widget.task?.isCompleted == 1
+                        ? 'Mark Incomplete'
+                        : 'Mark Complete',
                   ),
                 ),
                 SizedBox(width: 4),
@@ -150,116 +155,119 @@ class _TaskTileState extends State<TaskTile> {
             // EXPANDED DETAILS (INSIDE the Column!)
             if (isExpanded) ...[
               SizedBox(height: 10),
-              _buildDetailRow(Icons.category, "Category", widget.task?.category ?? "N/A"),
-              _buildDetailRow(Icons.date_range, "Date", widget.task?.date ?? "N/A"),
+              _buildDetailRow(
+                  Icons.category, "Category", widget.task?.category ?? "N/A"),
+              _buildDetailRow(
+                  Icons.date_range, "Date", widget.task?.date ?? "N/A"),
               _buildDetailRow(Icons.access_time_rounded, "Time",
                   "${widget.task?.startTime ?? ''} - ${widget.task?.endTime ?? ''}"),
-              _buildDetailRow(Icons.location_on, "Location", widget.task?.location ?? "No Location"),
-
+              _buildDetailRow(Icons.location_on, "Location",
+                  widget.task?.location ?? "No Location"),
               SizedBox(height: 10),
-
               if ((widget.task?.photoPaths?.isNotEmpty ?? false) ||
                   (widget.task?.videoPaths?.isNotEmpty ?? false) ||
                   (widget.task?.filePaths?.isNotEmpty ?? false)) ...[
                 Text(
                   "Attached Media:",
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 SizedBox(height: 8),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Photos - Full Width
                     if (widget.task?.photoPaths != null)
                       ...widget.task!.photoPaths!.map((path) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => FullImageScreen(imagePath: path),
-                              ),
-                            );
-                          },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              constraints: BoxConstraints(maxHeight: 200),
-                              child: Image.file(
-                                File(path),
-                                fit: BoxFit.cover,
-                                width: double.infinity,
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        FullImageScreen(imagePath: path),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  width: double.infinity,
+                                  constraints: BoxConstraints(maxHeight: 200),
+                                  child: Image.file(
+                                    File(path),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      )),
-                    
+                          )),
+
                     // Videos and Files in Wrap
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
                       children: [
-
                         // Videos
                         if (widget.task?.videoPaths != null)
-                          ...widget.task!.videoPaths!.map((path) => GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => VideoPlayerScreen(videoPath: path),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.black45,
-                              ),
-                              child: Center(
-                                child: Icon(Icons.play_circle_fill, color: Colors.white),
-                              ),
-                            ),
-                          )),
+                          ...widget.task!.videoPaths!
+                              .map((path) => GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => VideoPlayerScreen(
+                                              videoPath: path),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.black45,
+                                      ),
+                                      child: Center(
+                                        child: Icon(Icons.play_circle_fill,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  )),
 
                         // Files
                         if (widget.task?.filePaths != null)
-                          ...widget.task!.filePaths!.map((path) => GestureDetector(
-                            onTap: () {
-                              OpenFilex.open(path);
-                            },
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white24,
-                              ),
-                              child: Center(
-                                child: Icon(Icons.insert_drive_file, color: Colors.white),
-                              ),
-                            ),
-                          )),
+                          ...widget.task!.filePaths!
+                              .map((path) => GestureDetector(
+                                    onTap: () {
+                                      OpenFilex.open(path);
+                                    },
+                                    child: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.white24,
+                                      ),
+                                      child: Center(
+                                        child: Icon(Icons.insert_drive_file,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  )),
                       ],
                     ),
                   ],
                 ),
               ],
-
-
             ],
           ],
         ),
       ),
     );
   }
-
 
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Padding(
@@ -300,7 +308,6 @@ class _TaskTileState extends State<TaskTile> {
   }
 }
 
-
 String _getDay(String date) {
   try {
     final parts = date.split('/');
@@ -309,20 +316,31 @@ String _getDay(String date) {
     return '';
   }
 }
+
 String _getMonth(String date) {
   try {
     final parts = date.split('/');
     int month = int.tryParse(parts[0]) ?? 0;
     List<String> months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return months[month];
   } catch (e) {
     return '';
   }
 }
-
 
 //      Sqflite-----------------
 // class TaskTile extends StatelessWidget {

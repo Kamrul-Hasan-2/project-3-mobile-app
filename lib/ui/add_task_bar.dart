@@ -97,8 +97,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
     _selectedRepeat = task.repeat!;
     _selectedColor = task.color!;
 
-    _selectedImages = task.photoPaths?.map((path) => XFile(path)).toList() ?? [];
-    _selectedVideos = task.videoPaths?.map((path) => XFile(path)).toList() ?? [];
+    _selectedImages =
+        task.photoPaths?.map((path) => XFile(path)).toList() ?? [];
+    _selectedVideos =
+        task.videoPaths?.map((path) => XFile(path)).toList() ?? [];
     _selectedFiles = task.filePaths?.map((path) => XFile(path)).toList() ?? [];
   }
 
@@ -298,39 +300,39 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ],
               ),
               const SizedBox(height: 10),
+
               /// media preview --------------
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     ..._selectedImages.map((img) => Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: _mediaPreview("Image", img.path, () {
-                        setState(() {
-                          _selectedImages.remove(img);
-                        });
-                      }),
-                    )),
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: _mediaPreview("Image", img.path, () {
+                            setState(() {
+                              _selectedImages.remove(img);
+                            });
+                          }),
+                        )),
                     ..._selectedVideos.map((vid) => Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: _mediaPreview("Video", vid.path, () {
-                        setState(() {
-                          _selectedVideos.remove(vid);
-                        });
-                      }),
-                    )),
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: _mediaPreview("Video", vid.path, () {
+                            setState(() {
+                              _selectedVideos.remove(vid);
+                            });
+                          }),
+                        )),
                     ..._selectedFiles.map((file) => Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: _mediaPreview("File", file.path, () {
-                        setState(() {
-                          _selectedFiles.remove(file);
-                        });
-                      }),
-                    )),
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: _mediaPreview("File", file.path, () {
+                            setState(() {
+                              _selectedFiles.remove(file);
+                            });
+                          }),
+                        )),
                   ],
                 ),
               ),
-
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -432,13 +434,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           : index == 2
                               ? yellowClr
                               : _customColor,
-
                   child: _selectedColor == index
                       ? const Icon(Icons.done, color: Colors.white, size: 16)
                       : (index == 3
                           ? const Icon(Icons.color_lens,
-                              color: Colors.white,
-                              size: 16)
+                              color: Colors.white, size: 16)
                           : Container()),
                 ),
               ),
@@ -490,7 +490,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       },
     );
   }
-
 
   Color _customColor = Colors.blue;
 
@@ -578,7 +577,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
     await _taskfbController.addTask(task: task); // Your Firebase helper
     print("Task with multiple paths added to Firebase!");
   }
-
 
   Future<void> _updateTaskInDb() async {
     Task updatedTask = Task(
@@ -844,7 +842,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-
   Future<void> _pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -858,5 +855,4 @@ class _AddTaskPageState extends State<AddTaskPage> {
       });
     }
   }
-
 }

@@ -1,4 +1,3 @@
-
 import 'package:event_manager/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,56 +40,55 @@ class _MyInputFieldDropdownState extends State<MyInputFieldDropdown> {
         children: [
           Text(widget.title, style: titleStyle),
           Container(
-            decoration: BoxDecoration(
-              color: Get.isDarkMode ? Colors.grey[800] : Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue.withOpacity(0.3), // Blue shadow with opacity
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-
-            child:  TextFormField(
-              focusNode: _focusNode,
-              readOnly: widget.widget != null || widget.onTap != null,
-              autofocus: false,
-              cursorColor: Get.isDarkMode ? Colors.grey[100] : Colors.grey[700],
-              controller: widget.controller,
-              style: subTitleStyle,
-              onTap: widget.onTap,
-              enableInteractiveSelection: false, // Disable selection & magnifier
-              contextMenuBuilder: (context, editableTextState) {
-                return Container(); // Disable long-press menu
-              },
-              decoration: InputDecoration(
-                hintText: widget.hint,
-                hintStyle: subTitleStyle,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
-                    width: 1.0,
+              decoration: BoxDecoration(
+                color: Get.isDarkMode ? Colors.grey[800] : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue
+                        .withOpacity(0.3), // Blue shadow with opacity
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: Colors.blue,
-                    width: 2.0,
-                  ),
-                ),
-                suffixIcon: widget.widget,
+                ],
               ),
-            )
-
-          ),
+              child: TextFormField(
+                focusNode: _focusNode,
+                readOnly: widget.widget != null || widget.onTap != null,
+                autofocus: false,
+                cursorColor:
+                    Get.isDarkMode ? Colors.grey[100] : Colors.grey[700],
+                controller: widget.controller,
+                style: subTitleStyle,
+                onTap: widget.onTap,
+                enableInteractiveSelection:
+                    false, // Disable selection & magnifier
+                contextMenuBuilder: (context, editableTextState) {
+                  return Container(); // Disable long-press menu
+                },
+                decoration: InputDecoration(
+                  hintText: widget.hint,
+                  hintStyle: subTitleStyle,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  suffixIcon: widget.widget,
+                ),
+              )),
         ],
       ),
     );
   }
-
 }

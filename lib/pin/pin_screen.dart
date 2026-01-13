@@ -14,7 +14,6 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
   TextEditingController _pinController = TextEditingController();
   String? errorMessage;
 
-
   void _validatePin() async {
     bool isValid = await AppLockService.validatePin(_pinController.text);
     if (isValid) {
@@ -25,7 +24,6 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
       });
     }
   }
-
 
   void _testBiometricAuth() async {
     try {
@@ -47,7 +45,6 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
       print("Error: $e");
     }
   }
-
 
   void _showForgotPinDialog() async {
     String? hintQuestion = await AppLockService.getHintQuestion();
@@ -162,7 +159,8 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("Unlock", style: TextStyle(fontSize: 16, color: Colors.white)),
+                    Text("Unlock",
+                        style: TextStyle(fontSize: 16, color: Colors.white)),
                   ],
                 ),
               ),

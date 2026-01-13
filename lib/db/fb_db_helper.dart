@@ -58,5 +58,4 @@ class FBdbHelper {
         .doc(task.id)
         .update(task.toJson());
   }
-
 }

@@ -60,8 +60,10 @@ class _ResetPinScreenState extends State<ResetPinScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Reset or Remove App Lock PIN"),
-      backgroundColor: context.theme.primaryColor, ),
+      appBar: AppBar(
+        title: Text("Reset or Remove App Lock PIN"),
+        backgroundColor: context.theme.primaryColor,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -72,15 +74,19 @@ class _ResetPinScreenState extends State<ResetPinScreen> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: "Enter Current PIN",
-                border: OutlineInputBorder( // Adds a border
+                border: OutlineInputBorder(
+                  // Adds a border
                   borderRadius: BorderRadius.circular(12), // Rounded corners
-                  borderSide: BorderSide(color: Colors.blue, width: 2), // Border color
+                  borderSide:
+                      BorderSide(color: Colors.blue, width: 2), // Border color
                 ),
-                focusedBorder: OutlineInputBorder( // Border when focused
+                focusedBorder: OutlineInputBorder(
+                  // Border when focused
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Colors.blueAccent, width: 2),
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Padding inside the input
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12), // Padding inside the input
               ),
             ),
             SizedBox(height: 16),
@@ -98,10 +104,10 @@ class _ResetPinScreenState extends State<ResetPinScreen> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Colors.blueAccent, width: 2),
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
             ),
-
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

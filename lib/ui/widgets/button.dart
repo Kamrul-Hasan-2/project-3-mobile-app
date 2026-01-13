@@ -2,7 +2,6 @@ import 'package:event_manager/ui/theme.dart';
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
-
   final String label;
   final Function()? onTap;
 
@@ -11,14 +10,12 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,   // sdk
+      onTap: onTap, // sdk
       child: Container(
         width: 150,
         height: 50,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-        color: primaryClr
-        ),
+            borderRadius: BorderRadius.circular(20), color: primaryClr),
         child: Center(
           child: Text(
             label,
