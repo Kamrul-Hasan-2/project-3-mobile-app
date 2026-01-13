@@ -3,17 +3,13 @@ import 'package:event_manager/controllers/taskfb_controller.dart';
 import 'package:event_manager/models/task.dart';
 import 'package:event_manager/ui/media_preview/image_screen.dart';
 import 'package:event_manager/ui/theme.dart';
-import 'package:event_manager/ui/media_preview/vdo_player_screen.dart';
 import 'package:event_manager/ui/widgets/create_task_btn.dart';
 import 'package:event_manager/ui/widgets/input_field.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:path/path.dart' as p;
 
 class AddTaskPage extends StatefulWidget {
   final Task? task;
@@ -39,17 +35,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final List<String> categoryList = ["Work", "Personal", "Birthday", "Meeting"];
 
   int _selectedRemind = 5;
-  final List<int> remindList = [5, 10, 15, 20];
+  final List<int> remindList = [0, 5, 10, 15, 20];
 
   String _selectedRepeat = "None";
   final List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
 
-  // File? _selectedImage;
-  // File? _selectedVideo;
-  // File? _selectedFile;
   List<XFile> _selectedImages = [];
-  List<XFile> _selectedVideos = [];
-  List<XFile> _selectedFiles = [];
 
   int _selectedColor = 0;
 
@@ -99,9 +90,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
     _selectedImages =
         task.photoPaths?.map((path) => XFile(path)).toList() ?? [];
-    _selectedVideos =
-        task.videoPaths?.map((path) => XFile(path)).toList() ?? [];
-    _selectedFiles = task.filePaths?.map((path) => XFile(path)).toList() ?? [];
   }
 
   @override
@@ -172,64 +160,22 @@ class _AddTaskPageState extends State<AddTaskPage> {
               MyInputField(
                 title: "Category",
                 hint: _selectedCategory,
+                onTap: () => _showCategoryPicker(),
                 widget: Padding(
                   padding: const EdgeInsets.only(right: 15),
-                  child: DropdownButton(
-                    icon: const Icon(Icons.keyboard_arrow_down,
-                        color: Colors.grey),
-                    iconSize: 32,
-                    elevation: 4,
-                    style: subTitleStyle,
-                    underline: Container(height: 0),
-                    items: categoryList.map((value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(
-                          value,
-                          style: TextStyle(
-                              color:
-                                  Get.isDarkMode ? Colors.white : Colors.black),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedCategory = newValue!;
-                      });
-                    },
-                  ),
+                  child: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
                 ),
               ),
 
               MyInputField(
                 title: "Remind",
-                hint: "$_selectedRemind minutes early",
+                hint: _selectedRemind == 0
+                    ? "On time"
+                    : "$_selectedRemind minutes early",
+                onTap: () => _showRemindPicker(),
                 widget: Padding(
                   padding: const EdgeInsets.only(right: 15),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      DropdownButton(
-                        icon: const Icon(Icons.keyboard_arrow_down,
-                            color: Colors.grey),
-                        iconSize: 32,
-                        elevation: 4,
-                        style: subTitleStyle,
-                        underline: Container(height: 0),
-                        items: remindList.map((value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text("$value min"),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedRemind = int.parse(newValue.toString());
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                  child: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
                 ),
               ),
 
@@ -284,55 +230,35 @@ class _AddTaskPageState extends State<AddTaskPage> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Text("Attach Media", style: titleStyle),
+                  Text("Attach Image", style: titleStyle),
                 ],
               ),
               const SizedBox(height: 10),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _mediaButton(
                       "Image", Icons.image, Colors.blueAccent, _pickImages),
-                  _mediaButton(
-                      "Video", Icons.videocam, Colors.black, _pickVideos),
-                  _mediaButton(
-                      "File", Icons.attach_file, Colors.red, _pickFiles),
                 ],
               ),
               const SizedBox(height: 10),
 
               /// media preview --------------
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    ..._selectedImages.map((img) => Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: _mediaPreview("Image", img.path, () {
-                            setState(() {
-                              _selectedImages.remove(img);
-                            });
-                          }),
-                        )),
-                    ..._selectedVideos.map((vid) => Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: _mediaPreview("Video", vid.path, () {
-                            setState(() {
-                              _selectedVideos.remove(vid);
-                            });
-                          }),
-                        )),
-                    ..._selectedFiles.map((file) => Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: _mediaPreview("File", file.path, () {
-                            setState(() {
-                              _selectedFiles.remove(file);
-                            });
-                          }),
-                        )),
-                  ],
+              if (_selectedImages.isNotEmpty)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _selectedImages
+                        .map((img) => Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: _mediaPreview("Image", img.path, () {
+                                setState(() {
+                                  _selectedImages.remove(img);
+                                });
+                              }),
+                            ))
+                        .toList(),
+                  ),
                 ),
-              ),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -570,12 +496,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
       color: _selectedColor,
       isCompleted: 0,
       photoPaths: _selectedImages.map((e) => e.path).toList(),
-      videoPaths: _selectedVideos.map((e) => e.path).toList(),
-      filePaths: _selectedFiles.map((e) => e.path).toList(),
     );
 
-    await _taskfbController.addTask(task: task); // Your Firebase helper
-    print("Task with multiple paths added to Firebase!");
+    await _taskfbController.addTask(task: task);
+    print("Task with images added to Firebase!");
   }
 
   Future<void> _updateTaskInDb() async {
@@ -592,8 +516,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       repeat: _selectedRepeat,
       color: _selectedColor,
       photoPaths: _selectedImages.map((e) => e.path).toList(),
-      videoPaths: _selectedVideos.map((e) => e.path).toList(),
-      filePaths: _selectedFiles.map((e) => e.path).toList(),
       isCompleted: widget.task!.isCompleted,
     );
     await _taskfbController.updateEvents(updatedTask);
@@ -622,204 +544,52 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Widget _mediaPreview(String type, String path, VoidCallback onDelete) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
+      child: Stack(
         children: [
-          if (type == "Image")
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullImageScreen(imagePath: path),
-                      ),
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      File(path),
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FullImageScreen(imagePath: path),
                 ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: onDelete,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black54,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          else if (type == "Video")
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            VideoPlayerScreen(videoPath: path),
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      const Icon(Icons.play_circle_fill,
-                          size: 40, color: Colors.white),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: onDelete,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black54,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          else if (type == "PDF" && path.isNotEmpty)
-            GestureDetector(
-              onTap: () {
-                OpenFilex.open(path);
-              },
+              );
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(path),
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: onDelete,
               child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.black, // Dark background similar to the image
-                  borderRadius: BorderRadius.circular(10),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color:
-                            Colors.red.shade600, // Red background for PDF icon
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(Icons.picture_as_pdf,
-                          size: 24, color: Colors.white),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        path.split('/').last, // Show only the filename
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const Text(
-                      "PDF",
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                  ],
+                padding: const EdgeInsets.all(4),
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 16,
                 ),
               ),
-            )
-          else
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    OpenFilex.open(path);
-                  },
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Get.isDarkMode ? Colors.black : Colors.white,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.picture_as_pdf,
-                          color: Get.isDarkMode ? Colors.white : Colors.black,
-                          size: 24,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          path.split('/').last,
-                          style: subTitleStyle2.copyWith(fontSize: 10),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: onDelete,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black54,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
+            ),
+          ),
         ],
       ),
     );
   }
 
-// multiple media selected -----------------
+// Pick images
   Future<void> _pickImages() async {
     final List<XFile>? pickedImages = await _picker.pickMultiImage();
     if (pickedImages != null) {
@@ -829,30 +599,75 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-  Future<void> _pickVideos() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-      allowMultiple: true,
+  // Show category picker dialog
+  void _showCategoryPicker() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Category"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: categoryList.map((category) {
+              return ListTile(
+                title: Text(category),
+                leading: Radio<String>(
+                  value: category,
+                  groupValue: _selectedCategory,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = category;
+                  });
+                  Navigator.pop(context);
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
-
-    if (result != null) {
-      setState(() {
-        _selectedVideos.addAll(result.paths.map((path) => XFile(path!)));
-      });
-    }
   }
 
-  Future<void> _pickFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
+  // Show remind picker dialog
+  void _showRemindPicker() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Reminder Time"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: remindList.map((remind) {
+              return ListTile(
+                title: Text(remind == 0 ? "On time" : "$remind minutes early"),
+                leading: Radio<int>(
+                  value: remind,
+                  groupValue: _selectedRemind,
+                  onChanged: (int? value) {
+                    setState(() {
+                      _selectedRemind = value!;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedRemind = remind;
+                  });
+                  Navigator.pop(context);
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
-
-    if (result != null) {
-      setState(() {
-        _selectedFiles.addAll(result.paths.map((path) => XFile(path!)));
-      });
-    }
   }
 }

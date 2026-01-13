@@ -22,7 +22,7 @@ import 'package:event_manager/ui/widgets/task_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:open_filex/open_filex.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -644,21 +644,6 @@ Widget _buildDrawer(BuildContext context) {
                 final pathParts = filePath.split('/');
                 final fileName = pathParts.last;
 
-                // Get a user-friendly path description
-                String location = filePath;
-                if (filePath.contains('/Android/data/')) {
-                  // App-specific external storage
-                  final appPart =
-                      filePath.split('/Android/data/')[1].split('/')[0];
-                  location = 'App Storage (Android/data/$appPart/files)';
-                } else if (filePath.contains('app_flutter')) {
-                  location = 'App Internal Storage';
-                } else if (filePath.contains('Documents')) {
-                  location = 'Documents';
-                } else if (filePath.contains('Download')) {
-                  location = 'Downloads';
-                }
-
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -684,8 +669,10 @@ Widget _buildDrawer(BuildContext context) {
                     textColor: Colors.white,
                     onPressed: () async {
                       try {
-                        final result = await OpenFilex.open(filePath);
-                        if (result.type != ResultType.done) {
+                        final uri = Uri.file(filePath);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(

@@ -89,8 +89,6 @@ class Task {
   int? remind;
   String? repeat;
   List<String>? photoPaths;
-  List<String>? videoPaths;
-  List<String>? filePaths;
 
   Task({
     this.id,
@@ -106,8 +104,6 @@ class Task {
     this.remind,
     this.repeat,
     this.photoPaths,
-    this.videoPaths,
-    this.filePaths,
   });
 
   ///  Convert Firestore doc to Task
@@ -126,8 +122,6 @@ class Task {
       remind: json['remind'],
       repeat: json['repeat'],
       photoPaths: List<String>.from(json['photoPaths'] ?? []),
-      videoPaths: List<String>.from(json['videoPaths'] ?? []),
-      filePaths: List<String>.from(json['filePaths'] ?? []),
     );
   }
 
@@ -146,8 +140,6 @@ class Task {
       'remind': remind,
       'repeat': repeat,
       'photoPaths': photoPaths ?? [],
-      'videoPaths': videoPaths ?? [],
-      'filePaths': filePaths ?? [],
     };
   }
 }

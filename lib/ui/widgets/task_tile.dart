@@ -1,12 +1,9 @@
 import 'dart:io';
 import 'package:event_manager/models/task.dart';
 import 'package:event_manager/ui/media_preview/image_screen.dart';
-import 'package:event_manager/ui/media_preview/vdo_player_screen.dart';
 import 'package:event_manager/ui/theme.dart';
-import 'package:event_manager/ui/vdo_player_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_filex/open_filex.dart';
 
 class TaskTile extends StatefulWidget {
   final Task? task;
@@ -164,11 +161,9 @@ class _TaskTileState extends State<TaskTile> {
               _buildDetailRow(Icons.location_on, "Location",
                   widget.task?.location ?? "No Location"),
               SizedBox(height: 10),
-              if ((widget.task?.photoPaths?.isNotEmpty ?? false) ||
-                  (widget.task?.videoPaths?.isNotEmpty ?? false) ||
-                  (widget.task?.filePaths?.isNotEmpty ?? false)) ...[
+              if (widget.task?.photoPaths?.isNotEmpty ?? false) ...[
                 Text(
-                  "Attached Media:",
+                  "Attached Images:",
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                 ),
@@ -204,61 +199,6 @@ class _TaskTileState extends State<TaskTile> {
                               ),
                             ),
                           )),
-
-                    // Videos and Files in Wrap
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        // Videos
-                        if (widget.task?.videoPaths != null)
-                          ...widget.task!.videoPaths!
-                              .map((path) => GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => VideoPlayerScreen(
-                                              videoPath: path),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Colors.black45,
-                                      ),
-                                      child: Center(
-                                        child: Icon(Icons.play_circle_fill,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  )),
-
-                        // Files
-                        if (widget.task?.filePaths != null)
-                          ...widget.task!.filePaths!
-                              .map((path) => GestureDetector(
-                                    onTap: () {
-                                      OpenFilex.open(path);
-                                    },
-                                    child: Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Colors.white24,
-                                      ),
-                                      child: Center(
-                                        child: Icon(Icons.insert_drive_file,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  )),
-                      ],
-                    ),
                   ],
                 ),
               ],
